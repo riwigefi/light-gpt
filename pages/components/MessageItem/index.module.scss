@@ -1,0 +1,38 @@
+.message {
+    width: 70vw;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    margin: 0;
+    background-color: var(--body-bg);
+    box-sizing: border-box;
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        .img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    }
+    .user {
+        margin-right: 20px;
+    }
+    .assistant {
+        margin-left: 20px;
+    }
+    .content {
+        flex: 1;
+        min-height: 40px;
+        border-radius: 12px;
+        padding: 0 20px;
+        border: 1px solid var(--border-color);
+        color: var(--text-color-normal);
+    }
+    .placeholder {
+        width: 60px;
+        height: 100%;
+    }
+}
