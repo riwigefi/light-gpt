@@ -14,11 +14,18 @@ import styles from '@/styles/Home.module.scss';
 import MessageItem from './components/MessageItem';
 import AvatarUploader from './components/AvatarUploader';
 
-import { chatWithGptTurbo } from './open.ai.service';
+import { chatWithGptTurbo } from '../open.ai.service';
 
-import { Theme, SystemSettingMenu, ERole, IMessage } from './interface';
+import { Theme, SystemSettingMenu, ERole, IMessage } from '../interface';
 
-import { dataURItoBlob } from './utils';
+import {
+    dataURItoBlob,
+    ThemeLocalKey,
+    UserAvatarLocalKey,
+    RobotAvatarLocalKey,
+    SystemRoleLocalKey,
+    APIKeyLocalKey,
+} from '../utils';
 
 const SystemMenus = [
     {
@@ -54,6 +61,7 @@ export default function Home() {
         const response = await fetch('/api/get_available_api_key');
         const data = await response.json();
         SetApiKeyFromServer(data.apiKey);
+        window.localStorage.setItem(APIKeyLocalKey, data.apiKey);
         setActiveSystemMenu('');
     };
 
@@ -170,7 +178,7 @@ export default function Home() {
         }
     );
 
-    const [isErrorRequest, setIsErrorRequest] = useState(false);
+    const [serviceErrorMessage, setServiceErrorMessage] = useState('');
 
     const chatGPTTurboWithLatestUserPrompt = async (isRegenerate = false) => {
         // 先把用户输入信息展示到对话列表
@@ -209,6 +217,7 @@ export default function Home() {
         scrollSmoothThrottle();
 
         try {
+            setServiceErrorMessage('');
             setLoading(true);
             controller.current = new AbortController();
 
@@ -253,12 +262,10 @@ export default function Home() {
             }
             setLoading(false);
             archiveCurrentMessage(newCurrentAssistantMessage);
-            setIsErrorRequest(false);
         } catch (error: any) {
             setLoading(false);
             controller.current = null;
-            setIsErrorRequest(true);
-            console.log('api error--', JSON.stringify(error));
+            setServiceErrorMessage(error.error.message);
         }
     };
 
@@ -285,6 +292,7 @@ export default function Home() {
     const updateRobotAvatar = (img: string) => {
         setRobotAvatar(img);
         setActiveSystemMenu('');
+        window.localStorage.setItem(RobotAvatarLocalKey, img);
     };
 
     const [userAvatar, setUserAvatar] = useState<string>('/fox.png');
@@ -292,7 +300,33 @@ export default function Home() {
     const updateUserAvatar = (img: string) => {
         setUserAvatar(img);
         setActiveSystemMenu('');
+        window.localStorage.setItem(UserAvatarLocalKey, img);
     };
+
+    useEffect(() => {
+        const light_gpt_theme =
+            window.localStorage.getItem(ThemeLocalKey) || 'light';
+        setTheme(light_gpt_theme as Theme);
+        const light_gpt_user_avatar =
+            window.localStorage.getItem(UserAvatarLocalKey) || '/fox.png';
+        setUserAvatar(light_gpt_user_avatar);
+        const light_gpt_robot_avatar =
+            window.localStorage.getItem(RobotAvatarLocalKey) || '/robot.png';
+        setRobotAvatar(light_gpt_robot_avatar);
+        const light_gpt_system_role =
+            window.localStorage.getItem(SystemRoleLocalKey) || '';
+        if (light_gpt_system_role !== '') {
+            setSystemRole({
+                role: ERole.system,
+                content: light_gpt_system_role,
+            });
+        }
+        const light_gpt_api_key =
+            window.localStorage.getItem(APIKeyLocalKey) || '';
+        if (light_gpt_api_key !== '') {
+            setApiKey(light_gpt_api_key);
+        }
+    }, []);
 
     return (
         <div className={styles.app} data-theme={theme}>
@@ -326,6 +360,10 @@ export default function Home() {
                         className="themeToggleBtn"
                         onClick={() => {
                             setTheme(theme === 'light' ? 'dark' : 'light');
+                            window.localStorage.setItem(
+                                ThemeLocalKey,
+                                theme === 'light' ? 'dark' : 'light'
+                            );
                         }}
                     >
                         {theme === 'light' ? (
@@ -390,9 +428,9 @@ export default function Home() {
                 </div>
             </div>
             <div className={styles.footer}>
-                {isErrorRequest && (
+                {serviceErrorMessage !== '' && (
                     <div className={styles.openAiServiceError}>
-                        Service Error, Try To Refresh
+                        {serviceErrorMessage}
                     </div>
                 )}
 
@@ -475,15 +513,13 @@ export default function Home() {
                 </div>
             </div>
             <div className={styles.extraFunction}>
+                <i className="fas fa-image" onClick={convertToImage}></i>
+                <i className="fas fa-file-pdf" onClick={convertToPDF}></i>
                 <i
-                    className="fas fa-image"
-                    style={{ transform: 'scale(2)' }}
-                    onClick={convertToImage}
-                ></i>
-                <i
-                    className="fas fa-file-pdf"
-                    style={{ transform: 'scale(2)' }}
-                    onClick={convertToPDF}
+                    className="fas fa-trash-alt"
+                    onClick={() => {
+                        setMessageList([]);
+                    }}
                 ></i>
             </div>
 
@@ -531,6 +567,10 @@ export default function Home() {
                                         role: ERole.system,
                                         content: e.target.value,
                                     });
+                                    window.localStorage.setItem(
+                                        ThemeLocalKey,
+                                        e.target.value
+                                    );
                                 }}
                             ></textarea>
 
@@ -574,6 +614,10 @@ export default function Home() {
                                 value={apiKey}
                                 onChange={(e) => {
                                     setApiKey(e.target.value);
+                                    window.localStorage.setItem(
+                                        APIKeyLocalKey,
+                                        e.target.value
+                                    );
                                 }}
                             ></input>
 
@@ -613,6 +657,15 @@ export default function Home() {
                                     }}
                                 >
                                     Settings
+                                </button>
+                                <button
+                                    className={styles.saveButton}
+                                    onClick={() => {
+                                        handleGetApiKey();
+                                        setApiKey('');
+                                    }}
+                                >
+                                    reset api key which form current site
                                 </button>
                             </div>
                         </div>

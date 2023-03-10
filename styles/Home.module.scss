@@ -124,8 +124,8 @@
             position: absolute;
             top: -50px;
             left: 50%;
-            margin-left: -180px;
-            width: 360px;
+            margin-left: -40vw;
+            width: 80vw;
             height: 40px;
             color: var(--error);
 
@@ -144,6 +144,7 @@
             flex-direction: column;
             justify-content: flex-end;
             padding-bottom: 26px;
+
             .btn {
                 width: 100px;
                 height: 40px;
@@ -226,6 +227,7 @@
 
         i {
             margin-bottom: 40px;
+            transform: scale(2);
         }
     }
 
@@ -332,6 +334,9 @@
 
                 &:hover {
                     background-color: #0069d9;
+                }
+                &:nth-child(2) {
+                    margin-left: 60px;
                 }
             }
         }

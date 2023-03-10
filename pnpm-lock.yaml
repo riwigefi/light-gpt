@@ -10,6 +10,7 @@ specifiers:
   '@types/node': 18.14.6
   '@types/react': 18.0.28
   '@types/react-avatar-editor': ^13.0.0
+  '@types/react-copy-to-clipboard': ^5.0.4
   '@types/react-dom': 18.0.11
   eslint: 8.35.0
   eslint-config-next: 13.2.3
@@ -27,6 +28,7 @@ specifiers:
   postcss-preset-env: ^8.0.1
   react: 18.2.0
   react-avatar-editor: ^13.0.0
+  react-copy-to-clipboard: ^5.1.0
   react-dom: 18.2.0
   sass: ^1.58.3
   typescript: 4.9.5
@@ -45,6 +47,7 @@ dependencies:
   normalize.css: 8.0.1
   react: registry.npmmirror.com/react/18.2.0
   react-avatar-editor: 13.0.0_biqbaboplfbrettd7655fr4n2y
+  react-copy-to-clipboard: 5.1.0_react@18.2.0
   react-dom: registry.npmmirror.com/react-dom/18.2.0_react@18.2.0
   typescript: registry.npmmirror.com/typescript/4.9.5
 
@@ -57,6 +60,7 @@ devDependencies:
   '@types/node': registry.npmmirror.com/@types/node/18.14.6
   '@types/react': registry.npmmirror.com/@types/react/18.0.28
   '@types/react-avatar-editor': 13.0.0
+  '@types/react-copy-to-clipboard': 5.0.4
   '@types/react-dom': registry.npmmirror.com/@types/react-dom/18.0.11
   eslint: registry.npmmirror.com/eslint/8.35.0
   eslint-config-next: registry.npmmirror.com/eslint-config-next/13.2.3_ycpbpc6yetojsgtrx3mwntkhsu
@@ -597,6 +601,12 @@ packages:
       '@types/react': 18.0.28
     dev: true
 
+  /@types/react-copy-to-clipboard/5.0.4:
+    resolution: {integrity: sha512-otTJsJpofYAeaIeOwV5xBUGpo6exXG2HX7X4nseToCB2VgPEBxGBHCm/FecZ676doNR7HCSTVtmohxfG2b3/yQ==}
+    dependencies:
+      '@types/react': 18.0.28
+    dev: true
+
   /@types/react/18.0.28:
     resolution: {integrity: sha512-RD0ivG1kEztNBdoAK7lekI9M+azSnitIn85h4iOiaLjaTrMjzslhaqCGaI4IyCJ1RljWiLCEu4jyrLLgqxBTew==}
     dependencies:
@@ -706,6 +716,12 @@ packages:
       svg-pathdata: 6.0.3
     dev: false
     optional: true
+
+  /copy-to-clipboard/3.3.3:
+    resolution: {integrity: sha512-2KV8NhB5JqC3ky0r9PMCAZKbUHSwtEo4CwCs0KXgruG43gX5PMqDEBbVU4OUzw2MuAWUfsuFmWvEKG5QRfSnJA==}
+    dependencies:
+      toggle-selection: 1.0.6
+    dev: false
 
   /core-js-compat/3.29.0:
     resolution: {integrity: sha512-ScMn3uZNAFhK2DGoEfErguoiAHhV2Ju+oJo/jK08p7B3f3UhocUrCCkTvnZaiS+edl5nlIoiBXKcwMc6elv4KQ==}
@@ -1375,6 +1391,16 @@ packages:
       - supports-color
     dev: false
 
+  /react-copy-to-clipboard/5.1.0_react@18.2.0:
+    resolution: {integrity: sha512-k61RsNgAayIJNoy9yDsYzDe/yAZAzEbEgcz3DZMhF686LEyukcE1hzurxe85JandPUG+yTfGVFzuEw3xt8WP/A==}
+    peerDependencies:
+      react: ^15.3.0 || 16 || 17 || 18
+    dependencies:
+      copy-to-clipboard: 3.3.3
+      prop-types: 15.8.1
+      react: registry.npmmirror.com/react/18.2.0
+    dev: false
+
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
@@ -1432,6 +1458,10 @@ packages:
   /to-fast-properties/2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
+    dev: false
+
+  /toggle-selection/1.0.6:
+    resolution: {integrity: sha512-BiZS+C1OS8g/q2RRbJmy59xpyghNBqrr6k5L/uKBGRsTfxmu3ffiRnd8mlGPUVayg8pvfi5urfnu8TU7DVOkLQ==}
     dev: false
 
   /uc.micro/1.0.6:
