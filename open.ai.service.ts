@@ -29,7 +29,8 @@ export const chatWithGptTurbo = async (
         ).then(async (response) => {
             if (!response.ok) {
                 const text = await response.text();
-                throw new Error(text);
+                console.log('错误--', text, typeof text);
+                throw JSON.parse(text);
             }
             return response;
         });

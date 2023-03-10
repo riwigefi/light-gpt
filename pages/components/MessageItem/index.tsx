@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import MarkdownIt from 'markdown-it';
 
@@ -11,9 +11,20 @@ import MdHighlight from 'markdown-it-highlightjs';
 
 import Highlightjs from 'highlight.js';
 
-import { ERole } from '../../interface';
+import copy from 'react-copy-to-clipboard';
+
+import { ERole } from '../../../interface';
 
 import styles from './index.module.scss';
+
+async function copyTextToClipboard(text: string) {
+    try {
+        await navigator.clipboard.writeText(text);
+        console.log('Text copied to clipboard');
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+    }
+}
 
 const MessageItem: React.FC<{
     role: ERole;
@@ -32,14 +43,50 @@ const MessageItem: React.FC<{
             const [tokens, idx] = args;
             const token = tokens[idx];
             const rawCode = fence(...args);
-            return `<div class='container'>
-        <div data-code=${encodeURIComponent(token.content)}>
+            return `<div class='highlight-js-pre-container'>
+        <div class="copy" data-code=${encodeURIComponent(token.content)}>
+        <i class="fa fa-clipboard" aria-hidden="true"></i> ${
+            copied ? 'copied' : 'copy'
+        }
         </div>
         ${rawCode}
         </div>`;
         };
-        return md.render(message);
+        return md.render(message || '');
     };
+
+    const [copied, setCopied] = useState(false);
+
+    useEffect(() => {
+        window.addEventListener('click', (e) => {
+            const el = e.target as HTMLElement;
+            let code = '';
+
+            if (el.matches('div.highlight-js-pre-container > div.copy')) {
+                code = decodeURIComponent(el.dataset.code!);
+            }
+            if (el.matches('div.highlight-js-pre-container > div.copy > i')) {
+                code = decodeURIComponent(el.parentElement?.dataset.code!);
+            }
+
+            // 创建一个新的ClipboardItem对象
+            const item = new ClipboardItem({
+                'text/plain': new Blob([code], { type: 'text/plain' }),
+            });
+
+            // 将ClipboardItem对象写入系统剪切板
+            navigator.clipboard
+                .write([item])
+                .then(() => {
+                    // console.log('已成功复制到剪切板')
+                    setCopied(true);
+                })
+                .catch((err) => {
+                    // console.error('复制到剪切板失败：', err)
+                    setCopied(false);
+                });
+        });
+    }, []);
 
     return (
         <div className={styles.message}>
