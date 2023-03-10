@@ -7,6 +7,7 @@ export enum ERole {
 export interface IMessage {
     role: ERole;
     content: string;
+    id: string;
 }
 
 export type Theme = 'light' | 'dark';

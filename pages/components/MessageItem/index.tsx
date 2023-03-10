@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+import { v4 as uuid } from 'uuid';
+
+import { toast } from 'react-toastify';
 
 import MarkdownIt from 'markdown-it';
 
@@ -27,27 +31,29 @@ async function copyTextToClipboard(text: string) {
 }
 
 const MessageItem: React.FC<{
+    id: string;
     role: ERole;
     message: string;
     avatar?: string;
     showRetry?: boolean;
     onRetry?: () => void;
 }> = ({ role, message, avatar, showRetry, onRetry }) => {
+    const currentMessageEle = useRef<HTMLDivElement | null>(null);
+
     const htmlString = () => {
         const md = MarkdownIt().use(MdKatex).use(MdHighlight, {
             hljs: Highlightjs,
         });
         const fence = md.renderer.rules.fence;
         if (!fence) return '';
+        const id = uuid();
         md.renderer.rules.fence = (...args) => {
             const [tokens, idx] = args;
             const token = tokens[idx];
             const rawCode = fence(...args);
             return `<div class='highlight-js-pre-container'>
-        <div class="copy" data-code=${encodeURIComponent(token.content)}>
-        <i class="fa fa-clipboard" aria-hidden="true"></i> ${
-            copied ? 'copied' : 'copy'
-        }
+        <div id class="copy" data-code=${encodeURIComponent(token.content)}>
+        <i class="fa fa-clipboard" aria-hidden="true"></i> 
         </div>
         ${rawCode}
         </div>`;
@@ -55,41 +61,45 @@ const MessageItem: React.FC<{
         return md.render(message || '');
     };
 
-    const [copied, setCopied] = useState(false);
-
     useEffect(() => {
-        window.addEventListener('click', (e) => {
-            const el = e.target as HTMLElement;
+        if (!currentMessageEle.current) return;
+        const faClipboardIList =
+            currentMessageEle.current.querySelectorAll('.copy');
+        if (faClipboardIList.length === 0) return;
+        const clickHandler = (e: Event) => {
+            e.stopPropagation();
+            const el = e.currentTarget as HTMLElement;
             let code = '';
 
-            if (el.matches('div.highlight-js-pre-container > div.copy')) {
-                code = decodeURIComponent(el.dataset.code!);
-            }
-            if (el.matches('div.highlight-js-pre-container > div.copy > i')) {
-                code = decodeURIComponent(el.parentElement?.dataset.code!);
-            }
-
+            // console.log('点击复制', el);
+            code = decodeURIComponent(el.dataset.code || '');
             // 创建一个新的ClipboardItem对象
-            const item = new ClipboardItem({
-                'text/plain': new Blob([code], { type: 'text/plain' }),
-            });
-
-            // 将ClipboardItem对象写入系统剪切板
             navigator.clipboard
-                .write([item])
+                .writeText(code)
                 .then(() => {
-                    // console.log('已成功复制到剪切板')
-                    setCopied(true);
+                    toast.success('复制成功', { autoClose: 1000 });
                 })
                 .catch((err) => {
-                    // console.error('复制到剪切板失败：', err)
-                    setCopied(false);
+                    // console.error('写入剪贴板失败：', err)
                 });
+        };
+        faClipboardIList.forEach((item) => {
+            if (!item) return;
+            item.addEventListener('click', clickHandler);
         });
+        return () => {
+            faClipboardIList.forEach((item) => {
+                if (!item) return;
+                item.removeEventListener('click', clickHandler);
+            });
+        };
     }, []);
 
     return (
-        <div className={styles.message}>
+        <div
+            className={styles.message}
+            ref={(ele) => (currentMessageEle.current = ele)}
+        >
             {role === ERole.user ? (
                 <>
                     <div className={`${styles.user} ${styles.avatar}`}>

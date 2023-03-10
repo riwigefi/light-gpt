@@ -14,7 +14,10 @@ export const chatWithGptTurbo = async (
         method: 'POST',
         body: JSON.stringify({
             model: 'gpt-3.5-turbo',
-            messages: messages,
+            messages: messages.map((item) => ({
+                role: item.role,
+                content: item.content,
+            })),
             temperature: 0.6,
 
             stream: true,

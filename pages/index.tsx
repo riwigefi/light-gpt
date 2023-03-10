@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { throttle } from 'lodash';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { v4 as uuid } from 'uuid';
+
 import html2canvas from 'html2canvas';
 
 import html2pdf from 'html2pdf-jspdf2';
@@ -49,6 +54,8 @@ const SystemMenus = [
 export default function Home() {
     const [theme, setTheme] = useState<Theme>('light');
 
+    const [isGenerateFile, setIsGenerateFile] = useState(false);
+
     const [systemMenuVisible, setSystemMenuVisible] = useState(false);
     const [activeSystemMenu, setActiveSystemMenu] = useState<
         SystemSettingMenu | ''
@@ -72,14 +79,17 @@ export default function Home() {
     const chatHistoryEle = useRef<HTMLDivElement | null>(null);
 
     const convertToPDF = () => {
+        if (messageList.length === 0) {
+            toast.warn('暂无对话内容', { autoClose: 1000 });
+            return;
+        }
+        setIsGenerateFile(true);
         const element = chatHistoryEle.current;
         if (!element) return;
 
         const pdfPageWidth = element.clientWidth;
 
         const pdfPageHeight = element.scrollHeight;
-
-        console.log('pdf', pdfPageWidth, pdfPageHeight);
 
         const opt = {
             margin: [0, 0, 0, 0],
@@ -96,9 +106,15 @@ export default function Home() {
             },
         };
         html2pdf().from(element).set(opt).save();
+        setIsGenerateFile(false);
     };
 
     const convertToImage = () => {
+        if (messageList.length === 0) {
+            toast.warn('暂无对话内容', { autoClose: 1000 });
+            return;
+        }
+        setIsGenerateFile(true);
         const messageEleList =
             document.querySelector('#chatHistory')?.childNodes;
 
@@ -145,12 +161,14 @@ export default function Home() {
 
             // 模拟点击下载链接
             downloadLink.click();
+            setIsGenerateFile(false);
         });
     };
 
     const [systemRole, setSystemRole] = useState<IMessage>({
         role: ERole.system,
         content: '',
+        id: uuid(),
     });
 
     const [messageList, setMessageList] = useState<IMessage[]>([]);
@@ -189,6 +207,7 @@ export default function Home() {
             newMessageList.push({
                 role: ERole.user,
                 content: currentUserMessage,
+                id: uuid(),
             });
         }
 
@@ -206,6 +225,7 @@ export default function Home() {
                           role: ERole.system,
                           content:
                               'You are a versatile expert, please answer each of my questions in a simple and easy-to-understand way as much as possible',
+                          id: systemRole.id,
                       }
             );
         }
@@ -276,6 +296,7 @@ export default function Home() {
                     {
                         role: ERole.assistant,
                         content: newCurrentAssistantMessage,
+                        id: uuid(),
                     },
                 ])
             );
@@ -319,6 +340,7 @@ export default function Home() {
             setSystemRole({
                 role: ERole.system,
                 content: light_gpt_system_role,
+                id: uuid(),
             });
         }
         const light_gpt_api_key =
@@ -330,6 +352,7 @@ export default function Home() {
 
     return (
         <div className={styles.app} data-theme={theme}>
+            <ToastContainer></ToastContainer>
             <div
                 className={`${styles.systemSettingMenus} ${
                     systemMenuVisible && styles.show
@@ -406,9 +429,10 @@ export default function Home() {
                 >
                     {messageList
                         .filter((item) => item.role !== ERole.system)
-                        .map((item, idx) => (
+                        .map((item) => (
                             <MessageItem
-                                key={idx}
+                                key={item.id}
+                                id={item.id}
                                 role={item.role}
                                 avatar={
                                     item.role === ERole.user
@@ -420,6 +444,7 @@ export default function Home() {
                         ))}
                     {loading && currentAssistantMessage.length > 0 && (
                         <MessageItem
+                            id={uuid()}
                             role={ERole.assistant}
                             avatar={robotAvatar}
                             message={currentAssistantMessage}
@@ -463,6 +488,12 @@ export default function Home() {
                                     : 'ask gpt for anything...'
                             }
                             rows={1}
+                            onKeyDown={(event) => {
+                                if (event.code === 'Enter') {
+                                    event.preventDefault();
+                                    chatGPTTurboWithLatestUserPrompt(false);
+                                }
+                            }}
                         />
                         <div className={styles.submit}>
                             {loading ? (
@@ -512,12 +543,20 @@ export default function Home() {
                     )}
                 </div>
             </div>
-            <div className={styles.extraFunction}>
+            <div
+                className={`${styles.extraFunction} ${
+                    !messageList.length && styles.noMessage
+                }`}
+            >
                 <i className="fas fa-image" onClick={convertToImage}></i>
                 <i className="fas fa-file-pdf" onClick={convertToPDF}></i>
                 <i
                     className="fas fa-trash-alt"
                     onClick={() => {
+                        if (messageList.length === 0) {
+                            toast.warn('暂无对话内容', { autoClose: 1000 });
+                            return;
+                        }
                         setMessageList([]);
                     }}
                 ></i>
@@ -566,6 +605,7 @@ export default function Home() {
                                     setSystemRole({
                                         role: ERole.system,
                                         content: e.target.value,
+                                        id: uuid(),
                                     });
                                     window.localStorage.setItem(
                                         ThemeLocalKey,
@@ -672,6 +712,13 @@ export default function Home() {
                     )}
                 </div>
             </div>
+
+            {/** 生成图片、pdf的简单loading */}
+            {isGenerateFile && (
+                <div className={styles.loading}>
+                    <div className={styles.loadingSpinner}></div>
+                </div>
+            )}
         </div>
     );
 }

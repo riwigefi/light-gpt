@@ -12,6 +12,8 @@ specifiers:
   '@types/react-avatar-editor': ^13.0.0
   '@types/react-copy-to-clipboard': ^5.0.4
   '@types/react-dom': 18.0.11
+  '@types/react-toastify': ^4.1.0
+  '@types/uuid': ^9.0.1
   eslint: 8.35.0
   eslint-config-next: 13.2.3
   eventsource-parser: ^0.1.0
@@ -30,11 +32,15 @@ specifiers:
   react-avatar-editor: ^13.0.0
   react-copy-to-clipboard: ^5.1.0
   react-dom: 18.2.0
+  react-toastify: ^9.1.1
   sass: ^1.58.3
   typescript: 4.9.5
+  uuid: ^9.0.0
 
 dependencies:
   '@fortawesome/fontawesome-free': 6.3.0
+  '@types/react-toastify': 4.1.0_biqbaboplfbrettd7655fr4n2y
+  '@types/uuid': 9.0.1
   eventsource-parser: 0.1.0
   highlight.js: 11.7.0
   html2canvas: 1.4.1
@@ -49,7 +55,9 @@ dependencies:
   react-avatar-editor: 13.0.0_biqbaboplfbrettd7655fr4n2y
   react-copy-to-clipboard: 5.1.0_react@18.2.0
   react-dom: registry.npmmirror.com/react-dom/18.2.0_react@18.2.0
+  react-toastify: 9.1.1_biqbaboplfbrettd7655fr4n2y
   typescript: registry.npmmirror.com/typescript/4.9.5
+  uuid: 9.0.0
 
 devDependencies:
   '@types/highlight.js': 10.1.0
@@ -607,6 +615,16 @@ packages:
       '@types/react': 18.0.28
     dev: true
 
+  /@types/react-toastify/4.1.0_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-u7Ie/7LHBsPVz/iJxi/WlRDS7Gh9csCJACTDXx+pSLuZCm94xpkwzhM3jV1L5ZxP/in0Gp2tFbJ91VrSGr1gyQ==}
+    deprecated: This is a stub types definition. react-toastify provides its own type definitions, so you do not need this installed.
+    dependencies:
+      react-toastify: 9.1.1_biqbaboplfbrettd7655fr4n2y
+    transitivePeerDependencies:
+      - react
+      - react-dom
+    dev: false
+
   /@types/react/18.0.28:
     resolution: {integrity: sha512-RD0ivG1kEztNBdoAK7lekI9M+azSnitIn85h4iOiaLjaTrMjzslhaqCGaI4IyCJ1RljWiLCEu4jyrLLgqxBTew==}
     dependencies:
@@ -618,6 +636,10 @@ packages:
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
     dev: true
+
+  /@types/uuid/9.0.1:
+    resolution: {integrity: sha512-rFT3ak0/2trgvp4yYZo5iKFEPsET7vKydKF+VRCxlQ9bpheehyAJH89dAkaLEq/j/RZXJIqcgsmPJKUP1Z28HA==}
+    dev: false
 
   /argparse/2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -716,6 +738,11 @@ packages:
       svg-pathdata: 6.0.3
     dev: false
     optional: true
+
+  /clsx/1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: false
 
   /copy-to-clipboard/3.3.3:
     resolution: {integrity: sha512-2KV8NhB5JqC3ky0r9PMCAZKbUHSwtEo4CwCs0KXgruG43gX5PMqDEBbVU4OUzw2MuAWUfsuFmWvEKG5QRfSnJA==}
@@ -1405,6 +1432,17 @@ packages:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
+  /react-toastify/9.1.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-pkFCla1z3ve045qvjEmn2xOJOy4ZciwRXm1oMPULVkELi5aJdHCN/FHnuqXq8IwGDLB7PPk2/J6uP9D8ejuiRw==}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      clsx: 1.2.1
+      react: registry.npmmirror.com/react/18.2.0
+      react-dom: registry.npmmirror.com/react-dom/18.2.0_react@18.2.0
+    dev: false
+
   /regenerator-runtime/0.13.11:
     resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
     dev: false
@@ -1486,6 +1524,11 @@ packages:
     resolution: {integrity: sha512-1MLa5ouZiOmQzUbjbu9VmjLzn1QLXBhwpUa7kdLUQK+KQ5KA9I1vk5U4YHe/X2Ch7PYnJfWuWT+VbuxbGwljhw==}
     dependencies:
       base64-arraybuffer: 1.0.2
+
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
 
   /yallist/3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
