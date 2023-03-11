@@ -36,3 +36,46 @@
         height: 100%;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .message {
+        width: 96vw;
+        display: flex;
+        justify-content: space-between;
+        padding: 6px;
+        margin: 0;
+        background-color: var(--body-bg);
+        box-sizing: border-box;
+        font-size: 12px;
+        .avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            .img {
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+            }
+        }
+        .user {
+            margin-right: 6px;
+        }
+        .assistant {
+            margin-left: 6px;
+        }
+        .content {
+            flex: 1;
+            min-height: 20px;
+            border-radius: 12px;
+            padding: 0 10px;
+            border: 1px solid var(--border-color);
+            color: var(--text-color-normal);
+            word-break: break-all;
+        }
+        .placeholder {
+            width: 30px;
+            height: 100%;
+        }
+    }
+}

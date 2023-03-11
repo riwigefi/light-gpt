@@ -390,20 +390,13 @@ export default function Home() {
                         }}
                     >
                         {theme === 'light' ? (
-                            <i
-                                className="fas fa-moon"
-                                style={{ transform: 'scale(2)' }}
-                            ></i>
+                            <i className="fas fa-moon"></i>
                         ) : (
-                            <i
-                                className="fas fa-sun"
-                                style={{ transform: 'scale(2)' }}
-                            ></i>
+                            <i className="fas fa-sun"></i>
                         )}
                     </div>
                     <i
                         className="fas fa-cog"
-                        style={{ transform: 'scale(2)' }}
                         onClick={() => {
                             setSystemMenuVisible((visible) => !visible);
                         }}
@@ -411,7 +404,6 @@ export default function Home() {
 
                     <i
                         className="fab fa-github"
-                        style={{ transform: 'scale(2)' }}
                         onClick={() => {
                             window.open(
                                 'https://github.com/riwigefi/light-gpt',
@@ -450,6 +442,9 @@ export default function Home() {
                             message={currentAssistantMessage}
                         />
                     )}
+                    <div className={styles.placeholder}>
+                        <div className={styles.child}></div>
+                    </div>
                 </div>
             </div>
             <div className={styles.footer}>
@@ -462,6 +457,34 @@ export default function Home() {
                 <div className={styles.action}></div>
                 <div className={styles.middle}>
                     <div className={styles.textareaContainer}>
+                        {/** mobile regenerate and stop action */}
+                        <div className={styles.mobileAction}>
+                            {loading ? (
+                                <div
+                                    className={styles.btn}
+                                    onClick={() => {
+                                        if (controller.current) {
+                                            controller.current.abort();
+                                            setLoading(false);
+                                            archiveCurrentMessage(
+                                                currentAssistantMessage
+                                            );
+                                        }
+                                    }}
+                                >
+                                    Stop
+                                </div>
+                            ) : (
+                                <div
+                                    className={styles.btn}
+                                    onClick={() =>
+                                        chatGPTTurboWithLatestUserPrompt(true)
+                                    }
+                                >
+                                    Regenerate
+                                </div>
+                            )}
+                        </div>
                         <textarea
                             className={styles.userPrompt}
                             onChange={(e) => {
@@ -594,7 +617,7 @@ export default function Home() {
                     {activeSystemMenu ===
                         SystemSettingMenu.systemRoleSettings && (
                         <div className={styles.systemRoleSettings}>
-                            <label htmlFor="systemRole">System Role:</label>
+                            <label htmlFor="systemRole">System Role</label>
                             <textarea
                                 placeholder="Enter system role here"
                                 id="systemRole"
@@ -640,14 +663,14 @@ export default function Home() {
                                         setActiveSystemMenu('');
                                     }}
                                 >
-                                    Setting
+                                    Save
                                 </button>
                             </div>
                         </div>
                     )}
                     {activeSystemMenu === SystemSettingMenu.apiKeySettings && (
                         <div className={styles.systemRoleSettings}>
-                            <label htmlFor="apiKey">Open AI API Key:</label>
+                            <label htmlFor="apiKey">Open AI API Key</label>
                             <input
                                 placeholder="Enter your open ai api key"
                                 id="apiKey"
@@ -696,7 +719,7 @@ export default function Home() {
                                         setActiveSystemMenu('');
                                     }}
                                 >
-                                    Settings
+                                    Save
                                 </button>
                                 <button
                                     className={styles.saveButton}
@@ -705,7 +728,7 @@ export default function Home() {
                                         setApiKey('');
                                     }}
                                 >
-                                    reset api key which form current site
+                                    Get API Key
                                 </button>
                             </div>
                         </div>
