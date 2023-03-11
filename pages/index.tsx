@@ -481,10 +481,6 @@ export default function Home() {
                     </div>
                 )}
 
-                <div className={styles.openAiServiceError}>
-                    {serviceErrorMessage || '测试测试'}
-                </div>
-
                 <div className={styles.action}></div>
                 <div className={styles.middle}>
                     <div className={styles.textareaContainer}>
