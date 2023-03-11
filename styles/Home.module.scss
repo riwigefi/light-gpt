@@ -458,6 +458,10 @@
 // Mobile devices,iPad,Tablets
 @media screen and (max-width: 768px) {
     .app {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
         .systemSettingMenus {
             font-size: 12px;
             width: 160px;
@@ -536,6 +540,13 @@
                         margin: 0;
                         font-size: 12px;
                         min-height: 30px;
+                    }
+                    .submit {
+                        right: 4px;
+                        top: 8px;
+                        i {
+                            padding: 8px 10px;
+                        }
                     }
                 }
                 .siteDescription {

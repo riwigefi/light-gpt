@@ -52,6 +52,29 @@ const SystemMenus = [
 ];
 
 export default function Home() {
+    const windowState = useRef({
+        isMobile: false,
+        windowHeight: 0,
+        virtualKeyboardVisible: false,
+    });
+
+    useEffect(() => {
+        const isMobile =
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                window.navigator.userAgent
+            );
+        windowState.current.isMobile = isMobile;
+        windowState.current.windowHeight = window.innerHeight;
+        const handleWindowResize = () => {
+            windowState.current.virtualKeyboardVisible =
+                window.innerHeight < windowState.current.windowHeight;
+        };
+        window.addEventListener('resize', handleWindowResize);
+        return () => {
+            window.removeEventListener('resize', handleWindowResize);
+        };
+    }, []);
+
     const [theme, setTheme] = useState<Theme>('light');
 
     const [isGenerateFile, setIsGenerateFile] = useState(false);
@@ -80,7 +103,9 @@ export default function Home() {
 
     const convertToPDF = () => {
         if (messageList.length === 0) {
-            toast.warn('暂无对话内容', { autoClose: 1000 });
+            toast.warn('No question and answer content available', {
+                autoClose: 1000,
+            });
             return;
         }
         setIsGenerateFile(true);
@@ -111,7 +136,9 @@ export default function Home() {
 
     const convertToImage = () => {
         if (messageList.length === 0) {
-            toast.warn('暂无对话内容', { autoClose: 1000 });
+            toast.warn('No question and answer content available', {
+                autoClose: 1000,
+            });
             return;
         }
         setIsGenerateFile(true);
@@ -285,7 +312,7 @@ export default function Home() {
         } catch (error: any) {
             setLoading(false);
             controller.current = null;
-            setServiceErrorMessage(error.error.message);
+            setServiceErrorMessage(error?.error?.message || 'Service Error');
         }
     };
 
@@ -351,7 +378,7 @@ export default function Home() {
     }, []);
 
     return (
-        <div className={styles.app} data-theme={theme}>
+        <div id="app" className={styles.app} data-theme={theme}>
             <ToastContainer></ToastContainer>
             <div
                 className={`${styles.systemSettingMenus} ${
@@ -512,8 +539,27 @@ export default function Home() {
                             }
                             rows={1}
                             onKeyDown={(event) => {
-                                if (event.code === 'Enter') {
+                                if (
+                                    (event.code === 'Enter' ||
+                                        event.code === 'Done') &&
+                                    !windowState.current.isMobile
+                                ) {
                                     event.preventDefault();
+                                    chatGPTTurboWithLatestUserPrompt(false);
+                                }
+                                // event.key 的值不受操作系统和键盘布局的影响，它始终表示按下的是哪个字符键。
+                                if (
+                                    (event.key === 'Enter' ||
+                                        event.key === 'Done') &&
+                                    windowState.current.isMobile
+                                ) {
+                                    (
+                                        document.activeElement as HTMLElement
+                                    ).blur();
+                                }
+                            }}
+                            onBlur={() => {
+                                if (windowState.current.isMobile) {
                                     chatGPTTurboWithLatestUserPrompt(false);
                                 }
                             }}
@@ -577,7 +623,10 @@ export default function Home() {
                     className="fas fa-trash-alt"
                     onClick={() => {
                         if (messageList.length === 0) {
-                            toast.warn('暂无对话内容', { autoClose: 1000 });
+                            toast.warn(
+                                'No question and answer content available',
+                                { autoClose: 1000 }
+                            );
                             return;
                         }
                         setMessageList([]);
