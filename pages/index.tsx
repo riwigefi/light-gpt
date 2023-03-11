@@ -95,10 +95,6 @@ export default function Home() {
         setActiveSystemMenu('');
     };
 
-    useEffect(() => {
-        handleGetApiKey();
-    }, []);
-
     const chatHistoryEle = useRef<HTMLDivElement | null>(null);
 
     const convertToPDF = () => {
@@ -373,7 +369,10 @@ export default function Home() {
         const light_gpt_api_key =
             window.localStorage.getItem(APIKeyLocalKey) || '';
         if (light_gpt_api_key !== '') {
-            setApiKey(light_gpt_api_key);
+            // 不显示设置过的api_key
+            SetApiKeyFromServer(light_gpt_api_key);
+        } else {
+            handleGetApiKey();
         }
     }, []);
 
