@@ -503,6 +503,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            .openAiServiceError {
+                top: -66px;
+                font-size: 12px;
+            }
             .action {
                 display: none;
             }
