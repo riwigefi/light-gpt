@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { throttle } from 'lodash';
 
+import CryptoJS from 'crypto-js';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -62,6 +64,8 @@ export default function Home() {
         isUsingComposition: false,
     });
 
+    //
+
     useEffect(() => {
         const isMobile =
             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -83,20 +87,32 @@ export default function Home() {
 
     const [isGenerateFile, setIsGenerateFile] = useState(false);
 
+    const [tempSystemRoleValue, setTempSystemRoleValue] = useState('');
+
     const [systemMenuVisible, setSystemMenuVisible] = useState(false);
     const [activeSystemMenu, setActiveSystemMenu] = useState<
         SystemSettingMenu | ''
     >('');
 
+    const [tempApiKeyValue, setTempApiKeyValue] = useState('');
     const [apiKey, setApiKey] = useState('');
     const [apiKeyFromServer, SetApiKeyFromServer] = useState('');
 
     const handleGetApiKey = async () => {
         const response = await fetch('/api/get_available_api_key');
         const data = await response.json();
-        SetApiKeyFromServer(data.apiKey);
-        window.localStorage.setItem(APIKeyLocalKey, data.apiKey);
-        setActiveSystemMenu('');
+        const secretKey = data.secretKey;
+
+        const bytes = CryptoJS.AES.decrypt(data.apiKey, secretKey);
+        const apiKey = bytes.toString(CryptoJS.enc.Utf8);
+
+        setApiKey('');
+        setTempApiKeyValue('');
+        SetApiKeyFromServer(apiKey);
+        window.localStorage.setItem(APIKeyLocalKey, apiKey);
+        toast.success('Successful update', {
+            autoClose: 1000,
+        });
     };
 
     const chatHistoryEle = useRef<HTMLDivElement | null>(null);
@@ -685,19 +701,10 @@ export default function Home() {
                             <textarea
                                 placeholder="Enter system role here"
                                 id="systemRole"
-                                value={systemRole.content}
-                                cols={20}
+                                value={tempSystemRoleValue}
                                 rows={4}
                                 onChange={(e) => {
-                                    setSystemRole({
-                                        role: ERole.system,
-                                        content: e.target.value,
-                                        id: uuid(),
-                                    });
-                                    window.localStorage.setItem(
-                                        ThemeLocalKey,
-                                        e.target.value
-                                    );
+                                    setTempSystemRoleValue(e.target.value);
                                 }}
                             ></textarea>
 
@@ -725,6 +732,18 @@ export default function Home() {
                                     className={styles.saveButton}
                                     onClick={() => {
                                         setActiveSystemMenu('');
+                                        setSystemRole({
+                                            role: ERole.system,
+                                            content: tempSystemRoleValue,
+                                            id: uuid(),
+                                        });
+                                        window.localStorage.setItem(
+                                            ThemeLocalKey,
+                                            tempSystemRoleValue
+                                        );
+                                        toast.success('Successful update', {
+                                            autoClose: 1000,
+                                        });
                                     }}
                                 >
                                     Save
@@ -738,13 +757,9 @@ export default function Home() {
                             <input
                                 placeholder="Enter your open ai api key"
                                 id="apiKey"
-                                value={apiKey}
+                                value={tempApiKeyValue}
                                 onChange={(e) => {
-                                    setApiKey(e.target.value);
-                                    window.localStorage.setItem(
-                                        APIKeyLocalKey,
-                                        e.target.value
-                                    );
+                                    setTempApiKeyValue(e.target.value);
                                 }}
                             ></input>
 
@@ -781,6 +796,14 @@ export default function Home() {
                                     className={styles.saveButton}
                                     onClick={() => {
                                         setActiveSystemMenu('');
+                                        setApiKey(tempApiKeyValue);
+                                        window.localStorage.setItem(
+                                            APIKeyLocalKey,
+                                            tempApiKeyValue
+                                        );
+                                        toast.success('Successful update', {
+                                            autoClose: 1000,
+                                        });
                                     }}
                                 >
                                     Save
@@ -789,7 +812,7 @@ export default function Home() {
                                     className={styles.saveButton}
                                     onClick={() => {
                                         handleGetApiKey();
-                                        setApiKey('');
+                                        setActiveSystemMenu('');
                                     }}
                                 >
                                     Get API Key

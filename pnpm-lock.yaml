@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@fortawesome/fontawesome-free': ^6.3.0
+  '@types/crypto-js': ^4.1.1
   '@types/highlight.js': ^10.1.0
   '@types/html2canvas': ^1.0.0
   '@types/katex': ^0.16.0
@@ -14,6 +15,7 @@ specifiers:
   '@types/react-dom': 18.0.11
   '@types/react-toastify': ^4.1.0
   '@types/uuid': ^9.0.1
+  crypto-js: ^4.1.1
   eslint: 8.35.0
   eslint-config-next: 13.2.3
   eventsource-parser: ^0.1.0
@@ -39,8 +41,10 @@ specifiers:
 
 dependencies:
   '@fortawesome/fontawesome-free': 6.3.0
+  '@types/crypto-js': 4.1.1
   '@types/react-toastify': 4.1.0_biqbaboplfbrettd7655fr4n2y
   '@types/uuid': 9.0.1
+  crypto-js: 4.1.1
   eventsource-parser: 0.1.0
   highlight.js: 11.7.0
   html2canvas: 1.4.1
@@ -557,6 +561,10 @@ packages:
     dev: false
     optional: true
 
+  /@types/crypto-js/4.1.1:
+    resolution: {integrity: sha512-BG7fQKZ689HIoc5h+6D2Dgq1fABRa0RbBWKBd9SP/MVRVXROflpm5fhwyATX5duFmbStzyzyycPB8qUYKDH3NA==}
+    dev: false
+
   /@types/highlight.js/10.1.0:
     resolution: {integrity: sha512-77hF2dGBsOgnvZll1vymYiNUtqJ8cJfXPD6GG/2M0aLRc29PkvB7Au6sIDjIEFcSICBhCh2+Pyq6WSRS7LUm6A==}
     deprecated: This is a stub types definition. highlight.js provides its own type definitions, so you do not need this installed.
@@ -761,6 +769,10 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /crypto-js/4.1.1:
+    resolution: {integrity: sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==}
+    dev: false
 
   /css-blank-pseudo/5.0.2_postcss@8.4.21:
     resolution: {integrity: sha512-aCU4AZ7uEcVSUzagTlA9pHciz7aWPKA/YzrEkpdSopJ2pvhIxiQ5sYeMz1/KByxlIo4XBdvMNJAVKMg/GRnhfw==}
