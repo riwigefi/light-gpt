@@ -77,7 +77,7 @@ const MessageItem: React.FC<{
             navigator.clipboard
                 .writeText(code)
                 .then(() => {
-                    toast.success('复制成功', { autoClose: 1000 });
+                    toast.success('code copied', { autoClose: 1000 });
                 })
                 .catch((err) => {
                     // console.error('写入剪贴板失败：', err)

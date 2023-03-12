@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import { throttle } from 'lodash';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,6 +16,8 @@ import Link from 'next/link';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import styles from '@/styles/Home.module.scss';
+
+import HeadMeatSetup from './components/HeadMetaSetup';
 
 import MessageItem from './components/MessageItem';
 import AvatarUploader from './components/AvatarUploader';
@@ -56,6 +59,7 @@ export default function Home() {
         isMobile: false,
         windowHeight: 0,
         virtualKeyboardVisible: false,
+        isUsingComposition: false,
     });
 
     useEffect(() => {
@@ -378,6 +382,8 @@ export default function Home() {
 
     return (
         <div id="app" className={styles.app} data-theme={theme}>
+            <HeadMeatSetup></HeadMeatSetup>
+
             <ToastContainer></ToastContainer>
             <div
                 className={`${styles.systemSettingMenus} ${
@@ -538,19 +544,23 @@ export default function Home() {
                             }
                             rows={1}
                             onKeyDown={(event) => {
+                                // event.key 的值不受操作系统和键盘布局的影响，它始终表示按下的是哪个字符键。
+                                // pc端
                                 if (
+                                    !windowState.current.isMobile &&
                                     (event.code === 'Enter' ||
-                                        event.code === 'Done') &&
-                                    !windowState.current.isMobile
+                                        event.code === 'Done')
                                 ) {
                                     event.preventDefault();
+                                    if (windowState.current.isUsingComposition)
+                                        return;
                                     chatGPTTurboWithLatestUserPrompt(false);
                                 }
-                                // event.key 的值不受操作系统和键盘布局的影响，它始终表示按下的是哪个字符键。
+                                // 移动端
                                 if (
+                                    windowState.current.isMobile &&
                                     (event.key === 'Enter' ||
-                                        event.key === 'Done') &&
-                                    windowState.current.isMobile
+                                        event.key === 'Done')
                                 ) {
                                     (
                                         document.activeElement as HTMLElement
@@ -561,6 +571,12 @@ export default function Home() {
                                 if (windowState.current.isMobile) {
                                     chatGPTTurboWithLatestUserPrompt(false);
                                 }
+                            }}
+                            onCompositionStart={(e) => {
+                                windowState.current.isUsingComposition = true;
+                            }}
+                            onCompositionEnd={(e) => {
+                                windowState.current.isUsingComposition = false;
                             }}
                         />
                         <div className={styles.submit}>
