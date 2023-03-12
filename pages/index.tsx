@@ -762,7 +762,7 @@ export default function Home() {
 
                             <div className={styles.benefits}>
                                 Do not know how to get your api key?If you have
-                                a chatGPT account, please visit{' '}
+                                a Open AI account, please visit{' '}
                                 <Link
                                     href="https://platform.openai.com/account/api-keys"
                                     target="_blank"
