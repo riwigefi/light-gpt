@@ -102,6 +102,13 @@ const MessageItem: React.FC<{
         >
             {role === ERole.user ? (
                 <>
+                    <div className={styles.placeholder}></div>
+                    <div
+                        className={styles.content}
+                        dangerouslySetInnerHTML={{
+                            __html: htmlString(),
+                        }}
+                    ></div>
                     <div className={`${styles.user} ${styles.avatar}`}>
                         {avatar && (
                             <Image
@@ -113,23 +120,9 @@ const MessageItem: React.FC<{
                             />
                         )}
                     </div>
-                    <div
-                        className={styles.content}
-                        dangerouslySetInnerHTML={{
-                            __html: htmlString(),
-                        }}
-                    ></div>
-                    <div className={styles.placeholder}></div>
                 </>
             ) : (
                 <>
-                    <div className={styles.placeholder}></div>
-                    <div
-                        className={styles.content}
-                        dangerouslySetInnerHTML={{
-                            __html: htmlString(),
-                        }}
-                    ></div>
                     <div className={`${styles.assistant} ${styles.avatar}`}>
                         {avatar && (
                             <Image
@@ -141,6 +134,13 @@ const MessageItem: React.FC<{
                             />
                         )}
                     </div>
+                    <div
+                        className={styles.content}
+                        dangerouslySetInnerHTML={{
+                            __html: htmlString(),
+                        }}
+                    ></div>
+                    <div className={styles.placeholder}></div>
                 </>
             )}
             {showRetry && onRetry && (
