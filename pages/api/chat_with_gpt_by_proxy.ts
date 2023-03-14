@@ -23,6 +23,7 @@ export default async function handler(
                 Authorization: `Bearer ${apiKey}`,
             },
             method: 'POST',
+            timeout: 8000,
             body: JSON.stringify({
                 model: 'gpt-3.5-turbo',
                 messages: postData.messages,
