@@ -6,6 +6,71 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+
+    .historyTopicListContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 14vw;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 6;
+        display: flex;
+        flex-direction: column;
+        .newChatBtn {
+            width: 90%;
+            height: 40px;
+            flex-shrink: 0;
+            margin: 10px auto;
+            color: #ffffff;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #fff;
+            display: flex;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            i {
+                color: #ffffff;
+                margin-right: 10px;
+            }
+        }
+        .historyTopicList {
+            flex: 1;
+            overflow: hidden;
+            padding: 6px 0;
+            .inner {
+                height: 100%;
+                overflow-y: auto;
+
+                .historyTopic {
+                    width: 90%;
+                    height: 40px;
+                    margin: auto;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    color: #ffffff;
+                    border-radius: 8px;
+                    padding-left: 10px;
+                    cursor: pointer;
+                    &.active {
+                        background-color: #999999;
+                    }
+                    i {
+                        color: #ffffff;
+                        margin-right: 10px;
+                    }
+                    .topicName {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
+
     .systemSettingMenus {
         flex-direction: column;
         justify-content: center;
