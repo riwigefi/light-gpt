@@ -265,22 +265,28 @@ export default function Home() {
             setLoading(true);
             controller.current = new AbortController();
 
-            let response: Response;
-
-            if (apiKey) {
-                // user api key
-                response = await chatWithGptTurbo(
-                    apiKey || apiKeyFromServer,
-                    latestMessageLimit3,
-                    controller.current
-                );
-            } else {
+            if (!apiKey) {
                 // owner api key, proxy service
-                response = await chatWithGptTurboByProxy(
-                    latestMessageLimit3,
-                    controller.current
+                // response = await chatWithGptTurboByProxy(
+                //     latestMessageLimit3,
+                //     controller.current
+                // );
+
+                toast.error(
+                    'Please set API key in the top right corner of the page',
+                    {
+                        autoClose: 2000,
+                    }
                 );
+                return;
             }
+
+            // user api key
+            const response = await chatWithGptTurbo(
+                apiKey || apiKeyFromServer,
+                latestMessageLimit3,
+                controller.current
+            );
 
             if (!response.ok) {
                 throw new Error(response.statusText);
