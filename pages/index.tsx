@@ -62,8 +62,6 @@ export default function Home() {
         isUsingComposition: false,
     });
 
-    //
-
     useEffect(() => {
         const isMobile =
             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -95,7 +93,6 @@ export default function Home() {
 
     const [tempApiKeyValue, setTempApiKeyValue] = useState('');
     const [apiKey, setApiKey] = useState('');
-    const [apiKeyFromServer, SetApiKeyFromServer] = useState('');
 
     const chatHistoryEle = useRef<HTMLDivElement | null>(null);
 
@@ -276,7 +273,7 @@ export default function Home() {
 
             // user api key
             const response = await chatWithGptTurbo(
-                apiKey || apiKeyFromServer,
+                apiKey,
                 latestMessageLimit3,
                 controller.current
             );
@@ -338,9 +335,6 @@ export default function Home() {
             controller.current = null;
             setCurrentUserMessage('');
             setCurrentAssistantMessage('');
-            setTimeout(() => {
-                scrollSmoothThrottle();
-            }, 1000);
         }
     };
 
@@ -350,6 +344,7 @@ export default function Home() {
     const updateRobotAvatar = (img: string) => {
         setRobotAvatar(img);
         setActiveSystemMenu('');
+        setSystemMenuVisible(false);
         window.localStorage.setItem(RobotAvatarLocalKey, img);
     };
 
@@ -358,6 +353,7 @@ export default function Home() {
     const updateUserAvatar = (img: string) => {
         setUserAvatar(img);
         setActiveSystemMenu('');
+        setSystemMenuVisible(false);
         window.localStorage.setItem(UserAvatarLocalKey, img);
     };
 
@@ -384,7 +380,7 @@ export default function Home() {
             window.localStorage.getItem(APIKeyLocalKey) || '';
         if (light_gpt_api_key !== '') {
             // 不显示设置过的api_key
-            SetApiKeyFromServer(light_gpt_api_key);
+            setApiKey(light_gpt_api_key);
         }
     }, []);
 
@@ -724,6 +720,7 @@ export default function Home() {
                                     className={styles.saveButton}
                                     onClick={() => {
                                         setActiveSystemMenu('');
+                                        setSystemMenuVisible(false);
                                         setSystemRole({
                                             role: ERole.system,
                                             content: tempSystemRoleValue,
@@ -788,6 +785,7 @@ export default function Home() {
                                     className={styles.saveButton}
                                     onClick={() => {
                                         setActiveSystemMenu('');
+                                        setSystemMenuVisible(false);
                                         setApiKey(tempApiKeyValue);
                                         window.localStorage.setItem(
                                             APIKeyLocalKey,
@@ -800,15 +798,15 @@ export default function Home() {
                                 >
                                     Save
                                 </button>
-                                <button
+                                {/* <button
                                     className={styles.saveButton}
                                     onClick={() => {
-                                        // handleGetApiKey();
+                                      
                                         setActiveSystemMenu('');
                                     }}
                                 >
                                     Get API Key
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     )}
