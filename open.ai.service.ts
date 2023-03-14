@@ -1,5 +1,5 @@
 import { parseOpenAIStream } from './utils';
-import { IMessage } from './interface';
+import { ERole, IMessage } from './interface';
 
 export const chatWithGptTurbo = async (
     apiKey: string,
@@ -19,7 +19,6 @@ export const chatWithGptTurbo = async (
                 content: item.content,
             })),
             temperature: 0.6,
-
             stream: true,
         }),
         signal: controller.signal,
@@ -30,6 +29,34 @@ export const chatWithGptTurbo = async (
             `https://api.openai.com/v1/chat/completions`,
             requestInit
         ).then(async (response) => {
+            if (!response.ok) {
+                const text = await response.text();
+                console.log('错误--', text, typeof text);
+                throw JSON.parse(text);
+            }
+            return response;
+        });
+        return new Response(parseOpenAIStream(res));
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const chatWithGptTurboByProxy = async (
+    messages: IMessage[],
+    controller: AbortController
+) => {
+    try {
+        const res = await fetch(`/api/chat_with_gpt_by_proxy`, {
+            method: 'POST',
+            body: JSON.stringify({
+                messages: messages.map((item) => ({
+                    role: item.role,
+                    content: item.content,
+                })),
+            }),
+            signal: controller.signal,
+        }).then(async (response) => {
             if (!response.ok) {
                 const text = await response.text();
                 console.log('错误--', text, typeof text);

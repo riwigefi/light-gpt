@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { throttle } from 'lodash';
 
-import CryptoJS from 'crypto-js';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -24,7 +22,7 @@ import HeadMeatSetup from './components/HeadMetaSetup';
 import MessageItem from './components/MessageItem';
 import AvatarUploader from './components/AvatarUploader';
 
-import { chatWithGptTurbo } from '../open.ai.service';
+import { chatWithGptTurbo, chatWithGptTurboByProxy } from '../open.ai.service';
 
 import { Theme, SystemSettingMenu, ERole, IMessage } from '../interface';
 
@@ -78,6 +76,7 @@ export default function Home() {
                 window.innerHeight < windowState.current.windowHeight;
         };
         window.addEventListener('resize', handleWindowResize);
+
         return () => {
             window.removeEventListener('resize', handleWindowResize);
         };
@@ -97,23 +96,6 @@ export default function Home() {
     const [tempApiKeyValue, setTempApiKeyValue] = useState('');
     const [apiKey, setApiKey] = useState('');
     const [apiKeyFromServer, SetApiKeyFromServer] = useState('');
-
-    const handleGetApiKey = async () => {
-        const response = await fetch('/api/get_available_api_key');
-        const data = await response.json();
-        const secretKey = data.secretKey;
-
-        const bytes = CryptoJS.AES.decrypt(data.apiKey, secretKey);
-        const apiKey = bytes.toString(CryptoJS.enc.Utf8);
-
-        setApiKey('');
-        setTempApiKeyValue('');
-        SetApiKeyFromServer(apiKey);
-        window.localStorage.setItem(APIKeyLocalKey, apiKey);
-        toast.success('Successful update', {
-            autoClose: 1000,
-        });
-    };
 
     const chatHistoryEle = useRef<HTMLDivElement | null>(null);
 
@@ -168,7 +150,7 @@ export default function Home() {
         ).map((item) => {
             return html2canvas(item as HTMLElement);
         });
-        // 将所有canvas拼接成一个大的canvas
+
         Promise.all(promises).then((canvases) => {
             let canvasWidth = 0,
                 canvasHeight = 0;
@@ -188,21 +170,17 @@ export default function Home() {
                 context.drawImage(canvas, 0, offsetY);
                 offsetY += canvas.height - 2;
             });
-            // 生成最终图片
-            const imageData = finalCanvas.toDataURL('image/png');
 
-            // 创建一个Blob对象
+            const imageData = finalCanvas.toDataURL('image/png');
 
             const blob = dataURItoBlob(imageData);
 
-            // 创建一个下载链接
             const downloadLink = document.createElement('a');
             downloadLink.href = URL.createObjectURL(blob);
             downloadLink.download = `${new Date()
                 .getTime()
                 .toFixed(10)}dialog_list.png`;
 
-            // 模拟点击下载链接
             downloadLink.click();
             setIsGenerateFile(false);
         });
@@ -217,7 +195,7 @@ export default function Home() {
     const [messageList, setMessageList] = useState<IMessage[]>([]);
     const [currentUserMessage, setCurrentUserMessage] = useState('');
     const userPromptRef = useRef<HTMLTextAreaElement | null>(null);
-    // gpt-turbo的回复
+
     const [currentAssistantMessage, setCurrentAssistantMessage] = useState('');
 
     const [loading, setLoading] = useState(false);
@@ -243,7 +221,10 @@ export default function Home() {
 
     const chatGPTTurboWithLatestUserPrompt = async (isRegenerate = false) => {
         // 先把用户输入信息展示到对话列表
-        if (!isRegenerate && !currentUserMessage) return;
+        if (!isRegenerate && !currentUserMessage) {
+            toast.warn('Please  Enter your question', { autoClose: 1000 });
+            return;
+        }
 
         const newMessageList = messageList.concat([]);
         if (!isRegenerate) {
@@ -284,11 +265,22 @@ export default function Home() {
             setLoading(true);
             controller.current = new AbortController();
 
-            const response = await chatWithGptTurbo(
-                apiKey || apiKeyFromServer,
-                latestMessageLimit3,
-                controller.current
-            );
+            let response: Response;
+
+            if (apiKey) {
+                // user api key
+                response = await chatWithGptTurbo(
+                    apiKey || apiKeyFromServer,
+                    latestMessageLimit3,
+                    controller.current
+                );
+            } else {
+                // owner api key, proxy service
+                response = await chatWithGptTurboByProxy(
+                    latestMessageLimit3,
+                    controller.current
+                );
+            }
 
             if (!response.ok) {
                 throw new Error(response.statusText);
@@ -347,6 +339,9 @@ export default function Home() {
             controller.current = null;
             setCurrentUserMessage('');
             setCurrentAssistantMessage('');
+            setTimeout(() => {
+                scrollSmoothThrottle();
+            }, 1000);
         }
     };
 
@@ -391,8 +386,6 @@ export default function Home() {
         if (light_gpt_api_key !== '') {
             // 不显示设置过的api_key
             SetApiKeyFromServer(light_gpt_api_key);
-        } else {
-            handleGetApiKey();
         }
     }, []);
 
@@ -811,7 +804,7 @@ export default function Home() {
                                 <button
                                     className={styles.saveButton}
                                     onClick={() => {
-                                        handleGetApiKey();
+                                        // handleGetApiKey();
                                         setActiveSystemMenu('');
                                     }}
                                 >
