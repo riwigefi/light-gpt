@@ -8,6 +8,7 @@ export interface IMessage {
     role: ERole;
     content: string;
     id: string;
+    createdAt: number;
 }
 
 export type Theme = 'light' | 'dark';

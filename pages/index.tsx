@@ -26,6 +26,8 @@ import { chatWithGptTurbo, chatWithGptTurboByProxy } from '../open.ai.service';
 
 import { Theme, SystemSettingMenu, ERole, IMessage } from '../interface';
 
+import { ChatService } from '../db';
+
 import {
     dataURItoBlob,
     ThemeLocalKey,
@@ -34,6 +36,8 @@ import {
     SystemRoleLocalKey,
     APIKeyLocalKey,
 } from '../utils';
+
+const chatDB = new ChatService();
 
 const SystemMenus = [
     {
@@ -155,6 +159,7 @@ export default function Home() {
                 canvasWidth = Math.max(canvasWidth, canvas.width);
                 canvasHeight += canvas.height;
             });
+
             const finalCanvas = document.createElement('canvas');
             finalCanvas.width = canvasWidth;
             finalCanvas.height = canvasHeight;
@@ -164,8 +169,10 @@ export default function Home() {
 
             let offsetY = 0;
             canvases.forEach((canvas) => {
-                context.drawImage(canvas, 0, offsetY);
-                offsetY += canvas.height - 2;
+                if (canvas.width > 0) {
+                    context.drawImage(canvas, 0, offsetY);
+                    offsetY += canvas.height - 2;
+                }
             });
 
             const imageData = finalCanvas.toDataURL('image/png');
@@ -187,6 +194,7 @@ export default function Home() {
         role: ERole.system,
         content: '',
         id: uuid(),
+        createdAt: Date.now(),
     });
 
     const [messageList, setMessageList] = useState<IMessage[]>([]);
@@ -234,11 +242,20 @@ export default function Home() {
 
         const newMessageList = messageList.concat([]);
         if (!isRegenerate) {
-            newMessageList.push({
+            const newUserMessage = {
                 role: ERole.user,
                 content: currentUserMessage,
                 id: uuid(),
-            });
+                createdAt: Date.now(),
+            };
+            newMessageList.push(newUserMessage);
+            if (activeTopicId) {
+                // 更新
+                chatDB.addConversation({
+                    topicId: activeTopicId,
+                    ...newUserMessage,
+                });
+            }
         }
 
         // 取出最近的3条messages，作为上下文
@@ -256,6 +273,7 @@ export default function Home() {
                           content:
                               'You are a versatile expert, please answer each of my questions in a simple and easy-to-understand way as much as possible',
                           id: systemRole.id,
+                          createdAt: systemRole.createdAt,
                       }
             );
         }
@@ -322,15 +340,20 @@ export default function Home() {
 
     const archiveCurrentMessage = (newCurrentAssistantMessage: string) => {
         if (newCurrentAssistantMessage) {
-            setMessageList((list) =>
-                list.concat([
-                    {
-                        role: ERole.assistant,
-                        content: newCurrentAssistantMessage,
-                        id: uuid(),
-                    },
-                ])
-            );
+            const newAssistantMessage = {
+                role: ERole.assistant,
+                content: newCurrentAssistantMessage,
+                id: uuid(),
+                createdAt: Date.now(),
+            };
+            setMessageList((list) => list.concat([newAssistantMessage]));
+            if (activeTopicId) {
+                // 更新
+                chatDB.addConversation({
+                    topicId: activeTopicId,
+                    ...newAssistantMessage,
+                });
+            }
             setLoading(false);
             controller.current = null;
             setCurrentUserMessage('');
@@ -374,6 +397,7 @@ export default function Home() {
                 role: ERole.system,
                 content: light_gpt_system_role,
                 id: uuid(),
+                createdAt: Date.now(),
             });
         }
         const light_gpt_api_key =
@@ -384,11 +408,110 @@ export default function Home() {
         }
     }, []);
 
+    const [activeTopicId, setActiveTopicId] = useState('');
+
+    const [historyTopicList, setHistoryTopicList] = useState<
+        { id: string; name: string }[]
+    >([]);
+
+    useEffect(() => {
+        chatDB.getTopics().then((topics) => {
+            setHistoryTopicList(topics || []);
+        });
+    }, []);
+
+    const generateTopic = () => {
+        if (messageList.length === 0) return;
+        const topicName =
+            messageList
+                .find((item) => item.role === ERole.user)
+                ?.content?.slice(0, 10) ||
+            `主题${new Date().getTime().toFixed(10)}`;
+        const topicId = uuid();
+        const topic = {
+            id: topicId,
+            name: topicName,
+            createdAt: Date.now(),
+        };
+
+        chatDB.addTopic(topic);
+        let newHistoryTopicList = historyTopicList.concat([]);
+        newHistoryTopicList.unshift(topic);
+        setHistoryTopicList(newHistoryTopicList);
+        messageList.forEach((message) => {
+            chatDB.addConversation({
+                topicId: topicId,
+                id: message.id,
+                role: message.role,
+                content: message.content,
+                createdAt: message.createdAt,
+            });
+        });
+        setMessageList([]);
+    };
+
     return (
         <div id="app" className={styles.app} data-theme={theme}>
             <HeadMeatSetup></HeadMeatSetup>
 
             <ToastContainer></ToastContainer>
+
+            {/** 历史对话记录 */}
+            <div className={styles.historyTopicListContainer}>
+                <div
+                    className={styles.newChatBtn}
+                    onClick={() => {
+                        if (activeTopicId) {
+                            setActiveTopicId('');
+                            setMessageList([]);
+                            return;
+                        }
+                        // 新建主题，将当前对话信息存储在新建的主题下，然后清空messageList
+                        generateTopic();
+                    }}
+                >
+                    <i className="fas fa-plus"></i>
+                    <span>New Chat</span>
+                </div>
+                <div className={styles.historyTopicList}>
+                    <div className={styles.inner}>
+                        {historyTopicList.map((item) => {
+                            const isActive = item.id === activeTopicId;
+                            return (
+                                <div
+                                    key={item.id}
+                                    className={`${styles.historyTopic} ${
+                                        isActive && styles.active
+                                    } `}
+                                    onClick={async () => {
+                                        if (activeTopicId === '') {
+                                            generateTopic();
+                                        }
+                                        setActiveTopicId(item.id);
+                                        // 找出历史对话
+
+                                        setIsGenerateFile(true);
+                                        const messageList =
+                                            await chatDB.getConversationsByTopicId(
+                                                item.id
+                                            );
+                                        setMessageList(
+                                            messageList as IMessage[]
+                                        );
+                                        setIsGenerateFile(false);
+                                    }}
+                                >
+                                    <i className="fas fa-comment"></i>
+                                    <div className={styles.topicName}>
+                                        {item.name}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
             <div
                 className={`${styles.systemSettingMenus} ${
                     systemMenuVisible && styles.show
@@ -407,7 +530,7 @@ export default function Home() {
                 ))}
             </div>
             <div className={styles.header}>
-                <div className={styles.title}>
+                <div className={styles.title} onClick={async () => {}}>
                     <span className={styles.item}>Light</span>
                     <span className={styles.item}>GPT</span>
                 </div>
@@ -543,8 +666,8 @@ export default function Home() {
                             }}
                             placeholder={
                                 loading
-                                    ? 'gpt is thinking...'
-                                    : 'ask gpt for anything...'
+                                    ? 'light-gpt is thinking...'
+                                    : 'ask light-gpt for anything...'
                             }
                             rows={1}
                             onKeyDown={(event) => {
@@ -725,6 +848,7 @@ export default function Home() {
                                             role: ERole.system,
                                             content: tempSystemRoleValue,
                                             id: uuid(),
+                                            createdAt: systemRole.createdAt,
                                         });
                                         window.localStorage.setItem(
                                             ThemeLocalKey,

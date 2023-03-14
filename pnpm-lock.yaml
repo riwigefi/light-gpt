@@ -17,6 +17,8 @@ specifiers:
   '@types/react-toastify': ^4.1.0
   '@types/uuid': ^9.0.1
   crypto-js: ^4.1.1
+  dexie: ^3.2.3
+  dexie-react-hooks: ^1.1.3
   eslint: 8.35.0
   eslint-config-next: 13.2.3
   eventsource-parser: ^0.1.0
@@ -36,6 +38,7 @@ specifiers:
   react-avatar-editor: ^13.0.0
   react-copy-to-clipboard: ^5.1.0
   react-dom: 18.2.0
+  react-loading: ^2.0.3
   react-toastify: ^9.1.1
   sass: ^1.58.3
   typescript: 4.9.5
@@ -47,6 +50,8 @@ dependencies:
   '@types/react-toastify': 4.1.0_biqbaboplfbrettd7655fr4n2y
   '@types/uuid': 9.0.1
   crypto-js: 4.1.1
+  dexie: 3.2.3
+  dexie-react-hooks: 1.1.3_oyoivydq6d62bcmmdhna6akh5q
   eventsource-parser: 0.1.0
   highlight.js: 11.7.0
   html2canvas: 1.4.1
@@ -62,6 +67,7 @@ dependencies:
   react-avatar-editor: 13.0.0_biqbaboplfbrettd7655fr4n2y
   react-copy-to-clipboard: 5.1.0_react@18.2.0
   react-dom: registry.npmmirror.com/react-dom/18.2.0_react@18.2.0
+  react-loading: 2.0.3_react@18.2.0
   react-toastify: 9.1.1_biqbaboplfbrettd7655fr4n2y
   typescript: registry.npmmirror.com/typescript/4.9.5
   uuid: 9.0.0
@@ -872,6 +878,23 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: true
 
+  /dexie-react-hooks/1.1.3_oyoivydq6d62bcmmdhna6akh5q:
+    resolution: {integrity: sha512-bXXE1gfYtfuVYTNiOlyam+YVaO8KaqacgRuxFuP37YtpS6o/jxT6KOl5h+hhqY36s0UavlHWbL+HWJFMcQumIg==}
+    peerDependencies:
+      '@types/react': '>=16'
+      dexie: '>=3.1.0-alpha.1 <5.0.0'
+      react: '>=16'
+    dependencies:
+      '@types/react': registry.npmmirror.com/@types/react/18.0.28
+      dexie: 3.2.3
+      react: registry.npmmirror.com/react/18.2.0
+    dev: false
+
+  /dexie/3.2.3:
+    resolution: {integrity: sha512-iHayBd4UYryDCVUNa3PMsJMEnd8yjyh5p7a+RFeC8i8n476BC9wMhVvqiImq5zJZJf5Tuer+s4SSj+AA3x+ZbQ==}
+    engines: {node: '>=6.0'}
+    dev: false
+
   /dompurify/2.4.5:
     resolution: {integrity: sha512-jggCCd+8Iqp4Tsz0nIvpcb22InKEBrGz5dw3EQJMs8HPJDsKbFIO3STYtAvCfDx26Muevn1MHVI0XxjgFfmiSA==}
     requiresBuild: true
@@ -1530,6 +1553,15 @@ packages:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: false
 
+  /react-loading/2.0.3_react@18.2.0:
+    resolution: {integrity: sha512-Vdqy79zq+bpeWJqC+xjltUjuGApyoItPgL0vgVfcJHhqwU7bAMKzysfGW/ADu6i0z0JiOCRJjo+IkFNkRNbA3A==}
+    peerDependencies:
+      prop-types: ^15.6.0
+      react: '>=0.14.0'
+    dependencies:
+      react: registry.npmmirror.com/react/18.2.0
+    dev: false
+
   /react-toastify/9.1.1_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-pkFCla1z3ve045qvjEmn2xOJOy4ZciwRXm1oMPULVkELi5aJdHCN/FHnuqXq8IwGDLB7PPk2/J6uP9D8ejuiRw==}
     peerDependencies:
@@ -1783,7 +1815,6 @@ packages:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/prop-types/-/prop-types-15.7.5.tgz}
     name: '@types/prop-types'
     version: 15.7.5
-    dev: true
 
   registry.npmmirror.com/@types/react-dom/18.0.11:
     resolution: {integrity: sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/react-dom/-/react-dom-18.0.11.tgz}
@@ -1801,13 +1832,11 @@ packages:
       '@types/prop-types': registry.npmmirror.com/@types/prop-types/15.7.5
       '@types/scheduler': registry.npmmirror.com/@types/scheduler/0.16.2
       csstype: registry.npmmirror.com/csstype/3.1.1
-    dev: true
 
   registry.npmmirror.com/@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/scheduler/-/scheduler-0.16.2.tgz}
     name: '@types/scheduler'
     version: 0.16.2
-    dev: true
 
   registry.npmmirror.com/@typescript-eslint/parser/5.54.1_ycpbpc6yetojsgtrx3mwntkhsu:
     resolution: {integrity: sha512-8zaIXJp/nG9Ff9vQNh7TI+C3nA6q6iIsGJ4B4L6MhZ7mHnTMR4YP5vp2xydmFXIy8rpyIVbNAG44871LMt6ujg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@typescript-eslint/parser/-/parser-5.54.1.tgz}
@@ -2155,7 +2184,6 @@ packages:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/csstype/-/csstype-3.1.1.tgz}
     name: csstype
     version: 3.1.1
-    dev: true
 
   registry.npmmirror.com/damerau-levenshtein/1.0.8:
     resolution: {integrity: sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/damerau-levenshtein/-/damerau-levenshtein-1.0.8.tgz}
