@@ -397,7 +397,7 @@ export default function Home() {
                 role: ERole.system,
                 content: light_gpt_system_role,
                 id: uuid(),
-                createdAt: systemRole.createdAt,
+                createdAt: Date.now(),
             });
         }
         const light_gpt_api_key =
@@ -416,11 +416,7 @@ export default function Home() {
 
     useEffect(() => {
         chatDB.getTopics().then((topics) => {
-            console.log('所有主题--', topics);
             setHistoryTopicList(topics || []);
-            // topics.forEach((item) => {
-            //     chatDB.deleteTopicById(item.id);
-            // });
         });
     }, []);
 
