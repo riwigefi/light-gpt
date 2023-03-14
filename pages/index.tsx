@@ -220,6 +220,15 @@ export default function Home() {
     const [serviceErrorMessage, setServiceErrorMessage] = useState('');
 
     const chatGPTTurboWithLatestUserPrompt = async (isRegenerate = false) => {
+        if (!apiKey) {
+            toast.error('Please set API KEY', {
+                autoClose: 3000,
+            });
+            setSystemMenuVisible(true);
+            setActiveSystemMenu(SystemSettingMenu.apiKeySettings);
+            return;
+        }
+
         // 先把用户输入信息展示到对话列表
         if (!isRegenerate && !currentUserMessage) {
             toast.warn('Please  Enter your question', { autoClose: 1000 });
@@ -264,22 +273,6 @@ export default function Home() {
             setServiceErrorMessage('');
             setLoading(true);
             controller.current = new AbortController();
-
-            if (!apiKey) {
-                // owner api key, proxy service
-                // response = await chatWithGptTurboByProxy(
-                //     latestMessageLimit3,
-                //     controller.current
-                // );
-
-                toast.error(
-                    'Please set API key in the top right corner of the page',
-                    {
-                        autoClose: 2000,
-                    }
-                );
-                return;
-            }
 
             // user api key
             const response = await chatWithGptTurbo(
