@@ -36,15 +36,9 @@ cd light-gpt
 pnpm install
 ```
 
-3. Create a .env.local file and add the following content:
-
-```env.local
-API_KEY=<Your OpenAI API key>
-```
-
 If you don't have an OpenAI API key, you can leave it blank in the .env.local file and use the default API key in the application.
 
-4. Start the application:
+3. Start the application:
 
 ```bash
 pnpm run dev
@@ -52,4 +46,4 @@ pnpm run dev
 
 The application will start at http://localhost:3000.
 
-Now, you can access the application locally and test it.
+Now, you can access the application locally and test it，enter your API key，and start to chat.
