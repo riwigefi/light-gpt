@@ -10,7 +10,7 @@ Application experience address: https://light-gpt.vercel.app Repository address:
 
 1. This is a pure front-end application based on the gpt-3.5-turbo model that supports context-based conversations and API key access to the OpenAI service.
 2. Users can set avatars for both parties in the conversation (user avatar and robot avatar).
-3. Users can set their own OpenAI API key to ensure fast access. The API key set by the user will be saved on the client side and will not be leaked. **Due to limited personal funds and the fact that this project is purely a frontend application without backend services, there is currently no built-in experience-based api_key. If you are still concerned about security, you can deploy this project locally and then access it.**
+3. Users can set their own OpenAI API key to ensure fast access. The API key set by the user will be saved on the client side and will not be leaked. **Due to limited personal funds and the fact that this project is purely a front-end application without any back-end services, there is currently no built-in api_key for testing purposes. If you are still concerned about security, you can deploy this project locally and then access it.**
 4. GPT replies support syntax highlighting and one-click code copying (PC only).
    Conversations support exporting images and PDF documents.
 5. The application has been adapted for both PC and mobile devices for easy use.
@@ -57,7 +57,7 @@ Light-GPT 是一个基于 GPT-3.5-Turbo 模型的交互式网站项目。
 
 1. 这是一个纯前端应用程序，基于 gpt-3.5-turbo 模型，支持基于上下文的对话和 OpenAI 服务的 API 密钥访问。
 2. 用户可以为对话中的双方设置头像（用户头像和机器人头像）。
-3. 用户可以设置自己的 OpenAI API 密钥，以确保快速访问。用户设置的 API 密钥将保存在客户端，并且不会泄漏。由于个人资金有限，而且这个项目纯粹是一个前端应用程序，没有后端服务，因此目前没有内置的体验用 api_key。如果您仍然担心安全问题，可以在本地部署此项目，然后访问它。
+3. 用户可以设置自己的 OpenAI API 密钥，以确保快速访问。用户设置的 API 密钥将保存在客户端，并且不会泄漏。由于个人资金有限，而且这个项目纯粹是一个前端应用程序，没有后端服务，因此目前没有内置的、用来体验的 api_key。如果您仍然担心安全问题，可以在本地部署此项目，然后访问它。
 4. GPT 的回复支持语法高亮和一键复制代码（仅限 PC）。对话支持导出图片和 PDF 文档。
 5. 应用程序已经适配了 PC 和移动设备，方便使用。
 6. 现在支持开始新的主题对话和查看历史主题对话。所有这些对话数据都存储在 IndexedDB 中，不会有任何数据泄漏风险！
