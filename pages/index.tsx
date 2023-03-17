@@ -450,6 +450,9 @@ export default function Home() {
         setMessageList([]);
     };
 
+    const [historyTopicListVisible, setHistoryTopicListVisible] =
+        useState(true);
+
     return (
         <div id="app" className={styles.app} data-theme={theme}>
             <HeadMeatSetup></HeadMeatSetup>
@@ -457,7 +460,23 @@ export default function Home() {
             <ToastContainer></ToastContainer>
 
             {/** 历史对话记录 */}
-            <div className={styles.historyTopicListContainer}>
+            <div
+                className={`${styles.historyTopicListContainer} ${
+                    !historyTopicListVisible && styles.hide
+                }`}
+            >
+                <div
+                    className={styles.mobileHistoryTopicListToggle}
+                    onClick={() =>
+                        setHistoryTopicListVisible((visible) => !visible)
+                    }
+                >
+                    {historyTopicListVisible ? (
+                        <i className="fas fa-chevron-left"></i>
+                    ) : (
+                        <i className="fas fa-chevron-right"></i>
+                    )}
+                </div>
                 <div
                     className={styles.newChatBtn}
                     onClick={() => {
