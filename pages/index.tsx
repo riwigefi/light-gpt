@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import { throttle } from 'lodash';
 
+import { useRouter } from 'next/router';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -25,6 +27,10 @@ import AvatarUploader from './components/AvatarUploader';
 import { chatWithGptTurbo, chatWithGptTurboByProxy } from '../open.ai.service';
 
 import { Theme, SystemSettingMenu, ERole, IMessage } from '../interface';
+
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+
+import { auth } from '../firebase';
 
 import { ChatService } from '../db';
 
@@ -59,6 +65,23 @@ const SystemMenus = [
 ];
 
 export default function Home() {
+    const router = useRouter();
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                const uid = user.uid;
+                console.log('user--', user);
+                // ...
+            } else {
+                // User is signed out
+                // ...
+                router.push('/login');
+            }
+        });
+    }, [router]);
+
     const windowState = useRef({
         isMobile: false,
         windowHeight: 0,
@@ -608,6 +631,14 @@ export default function Home() {
                                 'https://github.com/riwigefi/light-gpt',
                                 '_blank'
                             );
+                        }}
+                    ></i>
+                    <i
+                        className="fas fa-sign-out-alt"
+                        onClick={() => {
+                            signOut(auth).then(() => {
+                                router.push(`/login`);
+                            });
                         }}
                     ></i>
                 </div>

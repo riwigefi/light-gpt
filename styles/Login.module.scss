@@ -1,0 +1,32 @@
+.loginAndRegister {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    position: relative;
+    .left {
+        width: 36vw;
+        height: 100vh;
+        background-color: sandybrown;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 48px;
+        &.isLogin {
+            background-color: salmon;
+        }
+    }
+    .right {
+        width: 74vw;
+        height: 100vh;
+    }
+    .tip {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        span {
+            margin-left: 10px;
+            color: #4f3cc9;
+            cursor: pointer;
+        }
+    }
+}
