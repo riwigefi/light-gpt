@@ -69,3 +69,18 @@ export const chatWithGptTurboByProxy = async (
         throw error;
     }
 };
+
+export const getCurrentApiKeyBilling = async (apiKey: string) => {
+    const res = await fetch(
+        `https://api.openai.com/dashboard/billing/credit_grants`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${apiKey}`,
+                Accept: 'application/json',
+            },
+            method: 'GET',
+        }
+    );
+    return res.json();
+};

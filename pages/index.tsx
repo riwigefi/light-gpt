@@ -22,7 +22,11 @@ import HeadMeatSetup from './components/HeadMetaSetup';
 import MessageItem from './components/MessageItem';
 import AvatarUploader from './components/AvatarUploader';
 
-import { chatWithGptTurbo, chatWithGptTurboByProxy } from '../open.ai.service';
+import {
+    chatWithGptTurbo,
+    chatWithGptTurboByProxy,
+    getCurrentApiKeyBilling,
+} from '../open.ai.service';
 
 import { Theme, SystemSettingMenu, ERole, IMessage } from '../interface';
 
@@ -97,6 +101,23 @@ export default function Home() {
 
     const [tempApiKeyValue, setTempApiKeyValue] = useState('');
     const [apiKey, setApiKey] = useState('');
+
+    const [currentApiKeyBilling, setCurrentApiKeyBilling] = useState({
+        totalGranted: 0,
+        totalAvailable: 0,
+        totalUsed: 0,
+    });
+
+    useEffect(() => {
+        if (!apiKey) return;
+        getCurrentApiKeyBilling(apiKey).then((res) => {
+            setCurrentApiKeyBilling({
+                totalGranted: res.total_granted,
+                totalAvailable: res.total_available,
+                totalUsed: res.total_used,
+            });
+        });
+    }, [apiKey]);
 
     const chatHistoryEle = useRef<HTMLDivElement | null>(null);
 
@@ -570,6 +591,21 @@ export default function Home() {
                 ))}
             </div>
             <div className={styles.header}>
+                <div className={styles.currentApiKeyBilling}>
+                    <div>
+                        total_granted :{' '}
+                        {apiKey ? currentApiKeyBilling.totalGranted : 0}$
+                    </div>
+                    <div>
+                        total_available :{' '}
+                        {apiKey ? currentApiKeyBilling.totalAvailable : 0}$
+                    </div>
+                    <div>
+                        total_used :{' '}
+                        {apiKey ? currentApiKeyBilling.totalUsed : 0}$
+                    </div>
+                </div>
+
                 <div className={styles.title} onClick={async () => {}}>
                     <span className={styles.item}>Light</span>
                     <span className={styles.item}>GPT</span>
