@@ -143,3 +143,7 @@ docker pull whynotisme/light-gpt
 ```bash
 docker run -p 8080:80 whynotisme/light-gpt
 ```
+
+## 重要提示
+
+**本地部署时，请务必保证你是科学上网环境，你可以正常访问 open ai 官网，如果不能，请不要设置 api key 进行调试，否则会有封号风险**
