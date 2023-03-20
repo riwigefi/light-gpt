@@ -593,6 +593,9 @@
             right: 10px;
         }
         .header {
+            .currentApiKeyBilling {
+                display: none;
+            }
             .title {
                 font-size: 18px;
             }

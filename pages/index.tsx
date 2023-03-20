@@ -111,11 +111,13 @@ export default function Home() {
     useEffect(() => {
         if (!apiKey) return;
         getCurrentApiKeyBilling(apiKey).then((res) => {
-            setCurrentApiKeyBilling({
-                totalGranted: res.total_granted,
-                totalAvailable: res.total_available,
-                totalUsed: res.total_used,
-            });
+            if (res.total_granted) {
+                setCurrentApiKeyBilling({
+                    totalGranted: res.total_granted,
+                    totalAvailable: res.total_available,
+                    totalUsed: res.total_used,
+                });
+            }
         });
     }, [apiKey]);
 
@@ -594,15 +596,22 @@ export default function Home() {
                 <div className={styles.currentApiKeyBilling}>
                     <div>
                         total_granted :{' '}
-                        {apiKey ? currentApiKeyBilling.totalGranted : 0}$
+                        {apiKey
+                            ? currentApiKeyBilling.totalGranted.toFixed(3)
+                            : 0}
+                        $
                     </div>
                     <div>
                         total_available :{' '}
-                        {apiKey ? currentApiKeyBilling.totalAvailable : 0}$
+                        {apiKey
+                            ? currentApiKeyBilling.totalAvailable.toFixed(3)
+                            : 0}
+                        $
                     </div>
                     <div>
                         total_used :{' '}
-                        {apiKey ? currentApiKeyBilling.totalUsed : 0}$
+                        {apiKey ? currentApiKeyBilling.totalUsed.toFixed(3) : 0}
+                        $
                     </div>
                 </div>
 

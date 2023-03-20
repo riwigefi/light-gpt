@@ -1,92 +1,145 @@
-# light-gpt
+# Light-GPT
 
-Light-GPT is an interactive website project based on the GPT-3.5-Turbo Model.
+Light-GPT is an interactive website project based on the GPT-3.5-Turbo model. It is built using the Next.js framework and deployed on the Vercel cloud platform. It is a pure front-end lightweight application.
 
-This is a small application built using the Next.js framework and deployed on the Vercel platform.
+Github: https://github.com/riwigefi/light-gpt
 
-Application experience address: https://light-gpt.vercel.app Repository address: https://github.com/riwigefi/light-gpt
+Demo: https://light-gpt.vercel.app
 
 ## Features
 
-1. This is a pure front-end application based on the gpt-3.5-turbo model that supports context-based conversations and API key access to the OpenAI service.
-2. Users can set avatars for both parties in the conversation (user avatar and robot avatar).
-3. Users can set their own OpenAI API key to ensure fast access. The API key set by the user will be saved on the client side and will not be leaked. **Due to limited personal funds and the fact that this project is purely a front-end application without any back-end services, there is currently no built-in api_key for testing purposes. If you are still concerned about security, you can deploy this project locally and then access it.**
-4. GPT replies support syntax highlighting and one-click code copying (PC only).
-   Conversations support exporting images and PDF documents.
-5. The application has been adapted for both PC and mobile devices for easy use.
-6. Now it supports starting a new themed conversation and reviewing historical themed conversations. All of these conversation data is stored in IndexedDB on your local device.**There is no risk of any data leakage!**
+1. A pure front-end application based on the GPT-3.5-Turbo model, using API KEY to request OpenAI's dialogue interface in the front-end, supporting streaming data, and displaying robot replies on the webpage in a typewriter effect.
+2. After deployment, users can set their API KEY on the front-end page. With scientific internet access, the Q&A speed will be very fast. The user's API KEY will be saved on the client-side, which means there is no risk of leakage.
+3. Supports new thematic dialogues and viewing of historical thematic dialogues. All dialogue data is stored in the IndexedDB of the browser, which means that dialogue data records are saved locally and there is no risk of data leakage.
+4. AI replies to programming-related questions support multiple syntax highlighting and one-click code copying.
+   Dialogues support image export and PDF export.
+5. The application is adapted for both PC and mobile devices, making it convenient to use.
+6. DIY, supporting setting user avatars and AI avatars.
 
-It took one week from idea to implementation, and everyone is welcome to experience and use it. Any feedback and suggestions for improvement are also welcome.
+## Site Preview
 
-If this application sharing can inspire and help others, it would be the greatest significance of my project. If it's not too much trouble, I would also be very grateful if you could give my project a star.
+![Site Preview 001](public/light-gpt-001-min.png)
 
-## how to deploy locally
+![Site Preview 002](public/light-gpt-002-min.png)
 
-To deploy this application locally, you need to follow the following steps(**Node version 16 or above is required**):
+## Local Deployment
 
-1. Clone the project to your local machine:
+To deploy Light-GPT locally, follow these steps (requires node16 or higher):
+
+1. Download the project to your local machine:
 
 ```bash
 git clone https://github.com/riwigefi/light-gpt.git
 ```
 
-2. Navigate to the project directory and install the dependencies:
+2. Navigate to the project directory and install dependencies:
 
 ```bash
 cd light-gpt
 pnpm install
 ```
 
-1. Start the application:
+3. Start the application:
 
 ```bash
 pnpm run dev
 ```
 
-The application will start at http://localhost:3000. Now, you can access the application locally and test it，enter your API key，and start to chat.
+The project will now be available for preview at http://localhost:3000. Enter your API KEY on the front-end page to start chatting.
 
-# Light-GPT
+## Vercel Online Deployment
 
-Light-GPT 是一个基于 GPT-3.5-Turbo 模型的交互式网站项目。
+To deploy Light-GPT on Vercel's cloud platform:
 
-这是一个使用 Next.js 框架构建并部署在 Vercel 平台上的小型应用程序。
+1. Register for a Vercel account at https://vercel.com. A mobile verification code is required.
 
-应用体验地址：https://light-gpt.vercel.app 仓库地址：https://github.com/riwigefi/light-gpt
+2. Fork the https://github.com/riwigefi/light-gpt repository to your own Github account.
+
+3. Log in to the Vercel platform, click "Add New", select "Project", and then import the Github project you just forked. Click "Deploy".
+
+## Docker Local Deployment
+
+For those who prefer to use Docker for local deployment:
+
+1. Pull the Docker image:
+
+```bash
+docker pull whynotisme/light-gpt
+```
+
+2. Run the image and map port 8080 to port 80:
+
+```bash
+docker run -p 8080:80 whynotisme/light-gpt
+```
+
+# Light-GPT（中文介绍）
+
+Light-GPT 是一个基于 GPT-3.5-Turbo 模型的交互式网站项目，使用 Next.js 框架构建，使用 Vercel 云平台部署，是一个纯前端的轻量级应用。
+
+Github 代码库: https://github.com/riwigefi/light-gpt
+
+演示站点: https://light-gpt.vercel.app
 
 ## 功能
 
-1. 这是一个纯前端应用程序，基于 gpt-3.5-turbo 模型，支持基于上下文的对话和 OpenAI 服务的 API 密钥访问。
-2. 用户可以为对话中的双方设置头像（用户头像和机器人头像）。
-3. 用户可以设置自己的 OpenAI API 密钥，以确保快速访问。用户设置的 API 密钥将保存在客户端，并且不会泄漏。由于个人资金有限，而且这个项目纯粹是一个前端应用程序，没有后端服务，因此目前没有内置的、用来体验的 api_key。如果您仍然担心安全问题，可以在本地部署此项目，然后访问它。
-4. GPT 的回复支持语法高亮和一键复制代码（仅限 PC）。对话支持导出图片和 PDF 文档。
-5. 应用程序已经适配了 PC 和移动设备，方便使用。
-6. 现在支持开始新的主题对话和查看历史主题对话。所有这些对话数据都存储在 IndexedDB 中，不会有任何数据泄漏风险！
+1. 纯前端应用，基于 GPT-3.5-Turbo 模型，使用 API KEY 在前端请求 OpenAI 的对话接口，支持流式数据，页面以打字机效果显示机器人回复。
+2. 部署后，用户在前端页面设置自己的 API KEY，科学上网的情况下，问答速度会很快。用户设置的 API KEY 将保存在客户端，完全没有泄漏风险。
+3. 支持新的主题对话和查看历史主题对话。所有对话数据都存储在浏览器的 IndexedDB 中，也就是说对话数据记录是保存在本地的，不会有数据泄漏风险。
+4. AI 回复支持多种语法高亮和一键复制代码功能，针对编程相关问题。对话支持图片和 PDF 导出。
+5. 应用适配了 PC 和 Mobile 设备，方便使用。
+6. 支持 DIY，支持设置用户头像和 AI 头像。
 
-从构思到实现，这个项目花费了一周的时间，欢迎大家体验和使用。任何反馈和改进建议也都受欢迎。
+## 站点预览
 
-如果这个应用程序分享可以启发和帮助他人，那将是我项目最大的意义。如果可以的话，我也会非常感谢您能给我的项目点个赞。
+![Site Preview 001](public/light-gpt-001-min.png)
 
-## 如何在本地部署
+![Site Preview 002](public/light-gpt-002-min.png)
 
-要在本地部署此应用程序，您需要按照以下步骤操作(**需要 node16 及以上版本**)：
+## 本地部署
 
-1. 将项目克隆到本地计算机：
+要在本地部署 Light-GPT，按照以下步骤操作(需要 node16 及以上版本)：
+
+1. 将项目下载到本地:
 
 ```bash
 git clone https://github.com/riwigefi/light-gpt.git
 ```
 
-2. 进入项目目录并安装依赖项：
+2. 进入项目目录并安装依赖项:
 
 ```bash
 cd light-gpt
 pnpm install
 ```
 
-3. 启动应用程序：
+3. 启动应用程序:
 
 ```bash
 pnpm run dev
 ```
 
-应用程序将在 http://localhost:3000 上启动。现在，您可以在本地访问应用程序并进行测试，输入您的 API 密钥，然后开始聊天。
+这样，项目就能在 http://localhost:3000 上预览了。在前端页面输入你的 API KEY，就可以愉快对话了。
+
+## Vercel 线上部署
+
+1. 注册一个 Vercel 云平台部署账号，访问 https://vercel.com，需要国外的手机验证码校验。
+
+2. 将 https://github.com/riwigefi/light-gpt 这个仓库 fork 到你的 Github。
+3. 登录 Vercel 平台，点击 "Add New"，选择 "Project"，然后 import 刚刚 fork 的 Github 项目，点击部署即可。
+
+## Docker 本地部署
+
+为方便使用，本项目也提供了 Docker 镜像。
+
+1. 拉取 Docker 镜像:
+
+```bash
+docker pull whynotisme/light-gpt
+```
+
+2. 运行镜像并将端口 8080 映射到端口 80:
+
+```bash
+docker run -p 8080:80 whynotisme/light-gpt
+```
