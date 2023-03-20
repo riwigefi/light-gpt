@@ -247,41 +247,7 @@ export default function Home() {
 
     const [serviceErrorMessage, setServiceErrorMessage] = useState('');
 
-    const [isChianIp, setIsChinaIp] = useState(false);
-
-    useEffect(() => {
-        const checkIp = async () => {
-            // 获取用户IP地址
-            const userIpInfo = await fetch('https://api.ipify.org?format=json')
-                .then((response) => response.json())
-                .catch((error) => console.error(error));
-            if (!userIpInfo) {
-                setIsChinaIp(true);
-                alert('当前网络环境不支持访问该页面');
-                return;
-            }
-            const userIp = userIpInfo.ip;
-
-            // 判断IP地址是否属于中国大陆
-            const checkInfo = await fetch(`http://ip-api.com/json/${userIp}`)
-                .then((response) => response.json())
-                .catch((error) => console.error(error));
-
-            // checkInfo?.country: United States
-            if (!checkInfo?.country || checkInfo?.country === 'China') {
-                setIsChinaIp(true);
-                alert('当前网络环境不支持访问该页面');
-                return;
-            }
-        };
-        checkIp();
-    }, []);
-
     const chatGPTTurboWithLatestUserPrompt = async (isRegenerate = false) => {
-        if (isChianIp) {
-            alert('当前网络环境不支持访问该页面');
-            return;
-        }
         if (!apiKey) {
             toast.error('Please set API KEY', {
                 autoClose: 3000,
