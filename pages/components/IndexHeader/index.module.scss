@@ -1,0 +1,89 @@
+.headerContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 40px;
+    .currentApiKeyBilling {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 100%;
+        .item {
+            display: flex;
+            align-items: center;
+            color: var(--text-color-normal);
+            .label {
+                width: 120px;
+                text-align: right;
+                margin-right: 6px;
+            }
+        }
+    }
+    .siteIntroduction {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        .title {
+            color: rgba(148, 163, 184, 1);
+            font-size: 2rem;
+            font-weight: 800;
+            .item {
+                &:last-child {
+                    margin-left: 10px;
+                    color: transparent;
+                    font-weight: 800;
+                    background-image: linear-gradient(
+                        to right,
+                        rgba(56, 189, 248),
+                        rgba(5, 150, 105)
+                    );
+                    background-clip: text;
+                }
+            }
+        }
+        .description {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: rgba(148, 163, 184, 1);
+        }
+    }
+    .sideMenus {
+        display: flex;
+        align-items: center;
+        i {
+            margin-left: 40px;
+            transform: scale(2);
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .headerContainer {
+        padding: 0;
+        .currentApiKeyBilling {
+            transform: scale(0);
+            width: 1px;
+        }
+        .siteIntroduction {
+            flex: 1;
+            .title {
+                font-size: 18px;
+            }
+            .description {
+                font-size: 14px;
+            }
+        }
+        .sideMenus {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            i {
+                transform: scale(1.2);
+                margin-left: 20px;
+            }
+        }
+    }
+}

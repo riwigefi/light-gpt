@@ -6,6 +6,19 @@
     margin: 0;
     background-color: var(--body-bg);
     box-sizing: border-box;
+    position: relative;
+    .removeMessage {
+        position: absolute;
+        top: 30px;
+        right: 90px;
+        transform: scale(0);
+        color: var(--text-color-normal);
+    }
+    &:hover {
+        .removeMessage {
+            transform: scale(0.8);
+        }
+    }
     .avatar {
         width: 40px;
         height: 40px;

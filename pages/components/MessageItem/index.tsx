@@ -37,7 +37,8 @@ const MessageItem: React.FC<{
     avatar?: string;
     showRetry?: boolean;
     onRetry?: () => void;
-}> = ({ role, message, avatar, showRetry, onRetry }) => {
+    removeMessageById?: (id: string) => void;
+}> = ({ id, role, message, avatar, showRetry, onRetry, removeMessageById }) => {
     const currentMessageEle = useRef<HTMLDivElement | null>(null);
 
     const htmlString = () => {
@@ -100,6 +101,12 @@ const MessageItem: React.FC<{
             className={styles.message}
             ref={(ele) => (currentMessageEle.current = ele)}
         >
+            <i
+                className={`fas fa-trash-alt ${styles.removeMessage}`}
+                onClick={() => {
+                    removeMessageById?.(id);
+                }}
+            ></i>
             {role === ERole.user ? (
                 <>
                     <div className={styles.placeholder}></div>

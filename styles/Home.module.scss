@@ -26,85 +26,6 @@
                 display: none;
             }
         }
-        .mobileHistoryTopicListToggle {
-            width: 40px;
-            height: 40px;
-            position: absolute;
-            top: 50%;
-            margin-top: -20px;
-            right: -20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            i {
-                transform: scale(2);
-            }
-        }
-        .newChatBtn {
-            width: 90%;
-            height: 40px;
-            flex-shrink: 0;
-            margin: 10px auto;
-            color: #ffffff;
-            font-size: 16px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid #fff;
-            display: flex;
-            justify-content: center;
-            border-radius: 12px;
-            cursor: pointer;
-            i {
-                color: #ffffff;
-                margin-right: 10px;
-            }
-        }
-        .historyTopicList {
-            flex: 1;
-            overflow: hidden;
-            padding: 6px 0;
-            .inner {
-                height: 100%;
-                overflow-y: auto;
-
-                .historyTopic {
-                    width: 90%;
-                    height: 40px;
-                    margin: auto;
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
-                    color: #ffffff;
-                    border-radius: 8px;
-                    padding-left: 10px;
-                    cursor: pointer;
-                    position: relative;
-                    &.active {
-                        background-color: #999999;
-                        &:hover {
-                            .remove {
-                                display: block;
-                            }
-                        }
-                    }
-                    i {
-                        color: #ffffff;
-                        margin-right: 10px;
-                    }
-                    .topicName {
-                        font-size: 12px;
-                    }
-                    .remove {
-                        position: absolute;
-                        top: 0;
-                        right: -6px;
-                        display: none;
-                    }
-                }
-            }
-        }
     }
 
     .systemSettingMenus {
@@ -144,57 +65,6 @@
         justify-content: center;
         background-color: var(--light-bg-color);
         box-shadow: var(--shadow);
-        position: relative;
-        .currentApiKeyBilling {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 20vw;
-            height: 80px;
-            background-color: var(--bg-color);
-            color: var(--text-color-normal);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-        }
-        .title {
-            color: rgba(148, 163, 184, 1);
-            font-size: 2rem;
-            font-weight: 800;
-            .item {
-                &:last-child {
-                    margin-left: 10px;
-                    color: transparent;
-                    font-weight: 800;
-                    background-image: linear-gradient(
-                        to right,
-                        rgba(56, 189, 248),
-                        rgba(5, 150, 105)
-                    );
-                    background-clip: text;
-                }
-            }
-        }
-        .description {
-            font-size: 1.2rem;
-            font-weight: 400;
-            color: rgba(148, 163, 184, 1);
-        }
-        .menus {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: 100%;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            i {
-                margin-left: 40px;
-                transform: scale(2);
-            }
-        }
     }
 
     .main {
@@ -592,27 +462,7 @@
             top: 32px;
             right: 10px;
         }
-        .header {
-            .currentApiKeyBilling {
-                display: none;
-            }
-            .title {
-                font-size: 18px;
-            }
-            .description {
-                font-size: 14px;
-            }
-            .menus {
-                align-items: flex-start;
-                padding: 0;
-                padding-right: 10px;
-                padding-top: 10px;
-                i {
-                    transform: scale(1.2);
-                    margin-left: 20px;
-                }
-            }
-        }
+
         .main {
             .chatHistory {
                 .placeholder {
