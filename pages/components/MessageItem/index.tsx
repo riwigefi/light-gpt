@@ -12,6 +12,7 @@ import MdHighlight from 'markdown-it-highlightjs';
 import MdKatex from 'markdown-it-katex';
 
 import Highlightjs from 'highlight.js';
+import regex from 'highlight.js/lib/languages/ini';
 
 // styles
 import 'highlight.js/styles/atom-one-dark.css';
@@ -40,6 +41,8 @@ $$
 \\sum_{i=1}^n i^2 = \\frac{n(n+1)(2n+1)}{6}
 $$
 `;
+
+Highlightjs.registerLanguage('regex', regex);
 
 const MessageItem: React.FC<{
     id: string;

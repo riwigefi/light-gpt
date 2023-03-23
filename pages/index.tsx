@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import Link from 'next/link';
+
 import { throttle } from 'lodash';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,8 +12,6 @@ import { v4 as uuid } from 'uuid';
 import html2canvas from 'html2canvas';
 
 import html2pdf from 'html2pdf-jspdf2';
-
-import Link from 'next/link';
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -273,6 +273,13 @@ export default function Home() {
 
     const [serviceErrorMessage, setServiceErrorMessage] = useState('');
 
+    // api request rate limit
+    const apiRequestRateLimit = useRef({
+        maxRequestsPerMinute: 10,
+        requestsThisMinute: 0,
+        lastRequestTime: 0,
+    });
+
     const chatGPTTurboWithLatestUserPrompt = async (isRegenerate = false) => {
         if (!apiKey) {
             toast.error('Please set API KEY', {
@@ -333,6 +340,19 @@ export default function Home() {
         userPromptRef.current.style.height = 'auto';
         scrollSmoothThrottle();
 
+        const now = Date.now();
+        if (now - apiRequestRateLimit.current.lastRequestTime >= 60000) {
+            apiRequestRateLimit.current.requestsThisMinute = 0;
+            apiRequestRateLimit.current.lastRequestTime = 0;
+        }
+        if (
+            apiRequestRateLimit.current.requestsThisMinute >=
+            apiRequestRateLimit.current.maxRequestsPerMinute
+        ) {
+            toast.warn(`Api Requests are too frequent, try again later! `);
+            return;
+        }
+
         try {
             setServiceErrorMessage('');
             setLoading(true);
@@ -344,6 +364,7 @@ export default function Home() {
                 latestMessageLimit3,
                 controller.current
             );
+            apiRequestRateLimit.current.requestsThisMinute += 1;
 
             if (!response.ok) {
                 throw new Error(response.statusText);

@@ -18,7 +18,11 @@ const HeadMeatSetup = () => {
 
             <meta name="keywords" content="Next.js,ChatGPT,GPT,AI" />
 
-            <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+            {/** 支持webAPP(苹果添加到主页书签访问) */}
+            <meta content="yes" name="apple-mobile-web-app-capable" />
+            <link rel="apple-touch-icon" href="/favicon.ico" />
+            <link rel="apple-touch-icon" sizes="72x72" href="/favicon.ico" />
+            <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
         </Head>
     );
 };
