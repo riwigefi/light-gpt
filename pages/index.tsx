@@ -356,9 +356,11 @@ export default function Home() {
         scrollSmoothThrottle();
 
         const prompt =
-            latestMessageLimit3[latestMessageLimit3.length - 1].content || '';
+            latestMessageLimit3?.[latestMessageLimit3.length - 1]?.content ||
+            '';
 
-        const isGenerateImage = prompt.startsWith(GenerateImagePromptPrefix);
+        const isGenerateImage =
+            prompt?.startsWith(GenerateImagePromptPrefix) || false;
 
         try {
             setServiceErrorMessage('');

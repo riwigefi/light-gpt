@@ -52,7 +52,7 @@ const MessageItem: React.FC<{
 
     removeMessageById?: (id: string) => void;
 }> = ({ id, role, message, avatar, removeMessageById }) => {
-    const isImgResponse = message.startsWith(
+    const isImgResponse = message?.startsWith(
         'https://oaidalleapiprodscus.blob.core.windows.net/private'
     );
 
