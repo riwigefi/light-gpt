@@ -60,6 +60,14 @@
         background-color: var(--body-bg);
         box-sizing: border-box;
         font-size: 12px;
+        .removeMessage {
+            transform: scale(0);
+        }
+        &:hover {
+            .removeMessage {
+                transform: scale(0);
+            }
+        }
         .avatar {
             width: 20px;
             height: 20px;

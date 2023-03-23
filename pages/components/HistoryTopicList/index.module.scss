@@ -18,18 +18,18 @@
     height: 40px;
     flex-shrink: 0;
     margin: 10px auto;
-    color: #ffffff;
+    color: var(--side-menu-text-color);
     font-size: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #fff;
+    border: 1px solid var(--side-menu-text-color);
     display: flex;
     justify-content: center;
     border-radius: 12px;
     cursor: pointer;
     i {
-        color: #ffffff;
+        color: var(--side-menu-text-color);
         margin-right: 10px;
     }
     &.hide {
@@ -53,7 +53,7 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
-            color: #ffffff;
+            color: var(--side-menu-text-color);
             border-radius: 8px;
             padding-left: 10px;
             cursor: pointer;
@@ -67,7 +67,7 @@
                 }
             }
             i {
-                color: #ffffff;
+                color: var(--side-menu-text-color);
                 margin-right: 10px;
             }
             .topicName {
