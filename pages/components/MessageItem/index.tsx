@@ -49,10 +49,13 @@ const MessageItem: React.FC<{
     role: ERole;
     message: string;
     avatar?: string;
-    showRetry?: boolean;
-    onRetry?: () => void;
+
     removeMessageById?: (id: string) => void;
-}> = ({ id, role, message, avatar, showRetry, onRetry, removeMessageById }) => {
+}> = ({ id, role, message, avatar, removeMessageById }) => {
+    const isImgResponse = message.startsWith(
+        'https://oaidalleapiprodscus.blob.core.windows.net/private'
+    );
+
     const currentMessageEle = useRef<HTMLDivElement | null>(null);
 
     const htmlString = () => {
@@ -126,12 +129,14 @@ const MessageItem: React.FC<{
             {role === ERole.user ? (
                 <>
                     <div className={styles.placeholder}></div>
+
                     <div
                         className={styles.content}
                         dangerouslySetInnerHTML={{
                             __html: htmlString(),
                         }}
                     ></div>
+
                     <div className={`${styles.user} ${styles.avatar}`}>
                         {avatar && (
                             <Image
@@ -157,19 +162,26 @@ const MessageItem: React.FC<{
                             />
                         )}
                     </div>
-                    <div
-                        className={styles.content}
-                        dangerouslySetInnerHTML={{
-                            __html: htmlString(),
-                        }}
-                    ></div>
+                    {isImgResponse ? (
+                        <div className={styles.imgContent}>
+                            <Image
+                                className={styles.dellImage}
+                                width={1024}
+                                height={1024}
+                                src={message}
+                                alt=""
+                            />
+                        </div>
+                    ) : (
+                        <div
+                            className={styles.content}
+                            dangerouslySetInnerHTML={{
+                                __html: htmlString(),
+                            }}
+                        ></div>
+                    )}
                     <div className={styles.placeholder}></div>
                 </>
-            )}
-            {showRetry && onRetry && (
-                <div className={styles.regenerateBtn} onClick={onRetry}>
-                    Regenerate
-                </div>
             )}
         </div>
     );

@@ -7,6 +7,16 @@ const nextConfig = {
         includePaths: [path.join(__dirname, 'styles')],
         implementation: sass,
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'oaidalleapiprodscus.blob.core.windows.net',
+                port: '',
+                pathname: '/private/**',
+            },
+        ],
+    },
 };
 
 module.exports = nextConfig;

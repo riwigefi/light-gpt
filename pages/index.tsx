@@ -29,6 +29,7 @@ import HistoryTopicList from './components/HistoryTopicList';
 import {
     chatWithGptTurbo,
     chatWithGptTurboByProxy,
+    generateImageWithText,
     getCurrentApiKeyBilling,
 } from '../open.ai.service';
 
@@ -43,6 +44,7 @@ import {
     RobotAvatarLocalKey,
     SystemRoleLocalKey,
     APIKeyLocalKey,
+    GenerateImagePromptPrefix,
 } from '../utils';
 
 const chatDB = new ChatService();
@@ -273,7 +275,6 @@ export default function Home() {
 
     const [serviceErrorMessage, setServiceErrorMessage] = useState('');
 
-    // api request rate limit
     const apiRequestRateLimit = useRef({
         maxRequestsPerMinute: 10,
         requestsThisMinute: 0,
@@ -281,6 +282,20 @@ export default function Home() {
     });
 
     const chatGPTTurboWithLatestUserPrompt = async (isRegenerate = false) => {
+        // api request rate limit
+        const now = Date.now();
+        if (now - apiRequestRateLimit.current.lastRequestTime >= 60000) {
+            apiRequestRateLimit.current.requestsThisMinute = 0;
+            apiRequestRateLimit.current.lastRequestTime = 0;
+        }
+        if (
+            apiRequestRateLimit.current.requestsThisMinute >=
+            apiRequestRateLimit.current.maxRequestsPerMinute
+        ) {
+            toast.warn(`Api Requests are too frequent, try again later! `);
+            return;
+        }
+
         if (!apiKey) {
             toast.error('Please set API KEY', {
                 autoClose: 3000,
@@ -340,67 +355,79 @@ export default function Home() {
         userPromptRef.current.style.height = 'auto';
         scrollSmoothThrottle();
 
-        const now = Date.now();
-        if (now - apiRequestRateLimit.current.lastRequestTime >= 60000) {
-            apiRequestRateLimit.current.requestsThisMinute = 0;
-            apiRequestRateLimit.current.lastRequestTime = 0;
-        }
-        if (
-            apiRequestRateLimit.current.requestsThisMinute >=
-            apiRequestRateLimit.current.maxRequestsPerMinute
-        ) {
-            toast.warn(`Api Requests are too frequent, try again later! `);
-            return;
-        }
+        const prompt =
+            latestMessageLimit3[latestMessageLimit3.length - 1].content || '';
+
+        const isGenerateImage = prompt.startsWith(GenerateImagePromptPrefix);
 
         try {
             setServiceErrorMessage('');
             setLoading(true);
             controller.current = new AbortController();
 
-            // user api key
-            const response = await chatWithGptTurbo(
-                apiKey,
-                latestMessageLimit3,
-                controller.current
-            );
+            let response: Response;
+            if (isGenerateImage) {
+                response = await generateImageWithText(
+                    apiKey,
+                    prompt,
+                    controller.current
+                );
+            } else {
+                // user api key
+                response = await chatWithGptTurbo(
+                    apiKey,
+                    latestMessageLimit3,
+                    controller.current
+                );
+            }
+
             apiRequestRateLimit.current.requestsThisMinute += 1;
 
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
-            const data = response.body;
-
-            if (!data) {
-                throw new Error('No Data');
-            }
-            const reader = data.getReader();
-            const decoder = new TextDecoder('utf-8');
-            let newCurrentAssistantMessage = '';
-            // 循环读取数据
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) {
-                    break;
-                }
-                // 处理读取到的数据块
-                if (value) {
-                    let char = decoder.decode(value);
-                    if (
-                        char === `\n` &&
-                        newCurrentAssistantMessage.endsWith(`\n`)
-                    ) {
-                        continue;
-                    }
-                    if (char) {
-                        newCurrentAssistantMessage += char;
-                        setCurrentAssistantMessage(newCurrentAssistantMessage);
-                    }
+            if (isGenerateImage) {
+                const generateImgInfo = await response.json();
+                console.log('生成图片--', generateImgInfo);
+                archiveCurrentMessage(generateImgInfo?.data?.[0]?.url);
+                setTimeout(() => {
                     scrollSmoothThrottle();
+                }, 2000);
+            } else {
+                const data = response.body;
+                if (!data) {
+                    throw new Error('No Data');
                 }
+                const reader = data.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let newCurrentAssistantMessage = '';
+                // 循环读取数据
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) {
+                        break;
+                    }
+                    // 处理读取到的数据块
+                    if (value) {
+                        let char = decoder.decode(value);
+                        if (
+                            char === `\n` &&
+                            newCurrentAssistantMessage.endsWith(`\n`)
+                        ) {
+                            continue;
+                        }
+                        if (char) {
+                            newCurrentAssistantMessage += char;
+                            setCurrentAssistantMessage(
+                                newCurrentAssistantMessage
+                            );
+                        }
+                        scrollSmoothThrottle();
+                    }
+                }
+                archiveCurrentMessage(newCurrentAssistantMessage);
             }
             setLoading(false);
-            archiveCurrentMessage(newCurrentAssistantMessage);
         } catch (error: any) {
             setLoading(false);
             controller.current = null;
@@ -428,6 +455,7 @@ export default function Home() {
             controller.current = null;
             setCurrentUserMessage('');
             setCurrentAssistantMessage('');
+            scrollSmoothThrottle();
         }
     };
 
@@ -636,8 +664,8 @@ export default function Home() {
                             }}
                             placeholder={
                                 loading
-                                    ? 'light-gpt is thinking...'
-                                    : 'ask light-gpt for anything...'
+                                    ? 'ai is thinking...'
+                                    : 'type any text to ask ai for anything or type "img-your prompt" to generate img'
                             }
                             rows={1}
                             onKeyDown={(event) => {

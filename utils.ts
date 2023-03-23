@@ -69,3 +69,5 @@ export const UserAvatarLocalKey = 'light_gpt_user_avatar';
 export const RobotAvatarLocalKey = 'light_gpt_robot_avatar';
 export const SystemRoleLocalKey = 'light_gpt_system_role';
 export const APIKeyLocalKey = 'light_gpt_api_key';
+
+export const GenerateImagePromptPrefix = 'img-';

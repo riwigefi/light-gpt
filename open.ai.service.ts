@@ -1,6 +1,42 @@
 import { parseOpenAIStream } from './utils';
 import { ERole, IMessage } from './interface';
 
+export const generateImageWithText = async (
+    apiKey: string,
+    prompt: string,
+    controller: AbortController
+) => {
+    const requestInit: RequestInit = {
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${apiKey}`,
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            prompt: prompt,
+            n: 1,
+            size: '512x512',
+        }),
+        signal: controller.signal,
+    };
+    try {
+        const res = await fetch(
+            `https://api.openai.com/v1/images/generations`,
+            requestInit
+        ).then(async (response) => {
+            if (!response.ok) {
+                const text = await response.text();
+                console.log('错误--', text, typeof text);
+                throw JSON.parse(text);
+            }
+            return response;
+        });
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const chatWithGptTurbo = async (
     apiKey: string,
     messages: IMessage[],

@@ -44,6 +44,18 @@
         border: 1px solid var(--border-color);
         color: var(--text-color-normal);
     }
+    .imgContent {
+        flex: 1;
+        min-height: 40px;
+        border-radius: 12px;
+        padding: 20px;
+        color: var(--text-color-normal);
+    }
+
+    .dellImage {
+        width: 16vw;
+        height: 16vw;
+    }
     .placeholder {
         width: 60px;
         height: 100%;
