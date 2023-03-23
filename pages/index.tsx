@@ -388,7 +388,6 @@ export default function Home() {
             }
             if (isGenerateImage) {
                 const generateImgInfo = await response.json();
-                console.log('生成图片--', generateImgInfo);
                 archiveCurrentMessage(generateImgInfo?.data?.[0]?.url);
                 setTimeout(() => {
                     scrollSmoothThrottle();

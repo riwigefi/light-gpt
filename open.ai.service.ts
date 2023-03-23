@@ -26,7 +26,6 @@ export const generateImageWithText = async (
         ).then(async (response) => {
             if (!response.ok) {
                 const text = await response.text();
-                console.log('错误--', text, typeof text);
                 throw JSON.parse(text);
             }
             return response;
@@ -67,7 +66,6 @@ export const chatWithGptTurbo = async (
         ).then(async (response) => {
             if (!response.ok) {
                 const text = await response.text();
-                console.log('错误--', text, typeof text);
                 throw JSON.parse(text);
             }
             return response;
@@ -95,7 +93,6 @@ export const chatWithGptTurboByProxy = async (
         }).then(async (response) => {
             if (!response.ok) {
                 const text = await response.text();
-                console.log('错误--', text, typeof text);
                 throw JSON.parse(text);
             }
             return response;

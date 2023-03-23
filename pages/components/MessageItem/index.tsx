@@ -91,7 +91,6 @@ const MessageItem: React.FC<{
             const el = e.currentTarget as HTMLElement;
             let code = '';
 
-            // console.log('点击复制', el);
             code = decodeURIComponent(el.dataset.code || '');
             // 创建一个新的ClipboardItem对象
             navigator.clipboard

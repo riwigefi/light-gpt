@@ -39,11 +39,10 @@ const AvatarUploader: React.FC<{
     };
 
     const handleSave = () => {
-        console.log('点击保存--', editor.current);
         if (editor.current && avatar.img) {
             const canvas = editor.current.getImage();
             const dataURL = canvas.toDataURL();
-            console.log('保存--', dataURL);
+
             // 处理获取到的dataURL
             updateAvatar?.(dataURL);
         }
