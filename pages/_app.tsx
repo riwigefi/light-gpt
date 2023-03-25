@@ -4,7 +4,7 @@ import { appWithTranslation } from 'next-i18next';
 import '@/styles/globals.scss';
 import 'normalize.css';
 
-import i18n from './i18n';
+import i18n from '../i18n';
 
 function App({ Component, pageProps }: AppProps) {
     // 设置默认语言
