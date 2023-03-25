@@ -5,18 +5,20 @@
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
-    padding: 0 40px;
+    padding: 0 20px;
     .currentApiKeyBilling {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         height: 100%;
+        font-size: 12px;
+
         .item {
             display: flex;
             align-items: center;
             color: var(--text-color-normal);
             .label {
-                width: 120px;
+                width: 100px;
                 text-align: right;
                 margin-right: 6px;
             }

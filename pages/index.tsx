@@ -4,6 +4,8 @@ import Link from 'next/link';
 
 import { throttle } from 'lodash';
 
+import { useTranslation } from 'react-i18next';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -48,25 +50,6 @@ import {
 } from '../utils';
 
 const chatDB = new ChatService();
-
-const SystemMenus = [
-    {
-        label: 'Robot Avatar Settings',
-        value: SystemSettingMenu.robotAvatarSettings,
-    },
-    {
-        label: 'User Avatar Settings',
-        value: SystemSettingMenu.userAvatarSettings,
-    },
-    {
-        label: 'System Role Settings',
-        value: SystemSettingMenu.systemRoleSettings,
-    },
-    {
-        label: 'API KEY Settings',
-        value: SystemSettingMenu.apiKeySettings,
-    },
-];
 
 export default function Home() {
     const windowState = useRef({
@@ -519,6 +502,27 @@ export default function Home() {
         setHistoryDialogueListVisible((visible) => !visible);
     }, []);
 
+    const { t } = useTranslation();
+
+    const SystemMenus = [
+        {
+            label: t('robotAvatarSetting'),
+            value: SystemSettingMenu.robotAvatarSettings,
+        },
+        {
+            label: t('userAvatarSettings'),
+            value: SystemSettingMenu.userAvatarSettings,
+        },
+        {
+            label: t('systemRoleSettings'),
+            value: SystemSettingMenu.systemRoleSettings,
+        },
+        {
+            label: t('apiKeySettings'),
+            value: SystemSettingMenu.apiKeySettings,
+        },
+    ];
+
     return (
         <div id="app" className={styles.app} data-theme={theme}>
             <HeadMeatSetup></HeadMeatSetup>
@@ -666,23 +670,52 @@ export default function Home() {
                             placeholder={
                                 loading
                                     ? 'ai is thinking...'
-                                    : 'type any text to ask ai for anything or type "img-your prompt" to generate img'
+                                    : 'type any text to ask questions or type "img-your prompt" to generate img'
                             }
                             rows={1}
                             onKeyDown={(event) => {
                                 // event.key 的值不受操作系统和键盘布局的影响，它始终表示按下的是哪个字符键。
-                                // pc端
-                                if (
-                                    !windowState.current.isMobile &&
-                                    (event.code === 'Enter' ||
-                                        event.code === 'Done')
-                                ) {
-                                    event.preventDefault();
-                                    if (windowState.current.isUsingComposition)
-                                        return;
-                                    chatGPTTurboWithLatestUserPrompt(false);
+                                // pc desktop
+                                // if (
+                                //     !windowState.current.isMobile &&
+                                //     (event.code === 'Enter' ||
+                                //         event.code === 'Done')
+                                // ) {
+                                //     event.preventDefault();
+                                //     if (windowState.current.isUsingComposition)
+                                //         return;
+                                //     chatGPTTurboWithLatestUserPrompt(false);
+                                // }
+
+                                // change
+
+                                if (!windowState.current.isMobile) {
+                                    if (
+                                        event.code === 'Enter' &&
+                                        !event.shiftKey &&
+                                        (event.metaKey || event.ctrlKey)
+                                    ) {
+                                        // 按下 "Command/Ctrl" + "Enter"，输入换行符
+                                        const newValue =
+                                            currentUserMessage + '\n';
+                                        setCurrentUserMessage(newValue);
+                                        event.preventDefault();
+                                    } else if (
+                                        event.code === 'Enter' &&
+                                        !event.shiftKey
+                                    ) {
+                                        // 按下 "Enter"，发送请求
+                                        if (
+                                            windowState.current
+                                                .isUsingComposition
+                                        )
+                                            return;
+                                        chatGPTTurboWithLatestUserPrompt(false);
+                                        event.preventDefault();
+                                    }
                                 }
-                                // 移动端
+
+                                // mobile desktop
                                 if (
                                     windowState.current.isMobile &&
                                     (event.key === 'Enter' ||
@@ -790,7 +823,7 @@ export default function Home() {
                     {activeSystemMenu ===
                         SystemSettingMenu.robotAvatarSettings && (
                         <AvatarUploader
-                            title="Robot Avatar Settings"
+                            title={t('robotAvatarSetting')}
                             img={robotAvatar}
                             updateAvatar={updateRobotAvatar}
                         />
@@ -798,7 +831,7 @@ export default function Home() {
                     {activeSystemMenu ===
                         SystemSettingMenu.userAvatarSettings && (
                         <AvatarUploader
-                            title="User Avatar Settings"
+                            title={t('userAvatarSettings')}
                             img={userAvatar}
                             updateAvatar={updateUserAvatar}
                         />
@@ -818,23 +851,17 @@ export default function Home() {
                             ></textarea>
 
                             <div className={styles.description}>
-                                System role refers to the role identity in the
-                                generated text, which can be different
-                                characters, robots, or other entities. By
-                                setting different system roles, you can control
-                                the emotions and tone of the generated text to
-                                better adapt to the needs of specific scenarios.
+                                {t('systemRoleDescription')}
                             </div>
 
                             <div className={styles.benefits}>
-                                Do not know how to define system role? Come{' '}
+                                {t('systemRoleHelp')}
                                 <Link
                                     href="https://github.com/f/awesome-chatgpt-prompts"
                                     target="_blank"
                                 >
                                     Awesome ChatGPT Prompts
                                 </Link>{' '}
-                                to choose the system role you want
                             </div>
                             <div className={styles.btnContainer}>
                                 <button
@@ -857,7 +884,7 @@ export default function Home() {
                                         });
                                     }}
                                 >
-                                    Save
+                                    {t('save')}
                                 </button>
                             </div>
                         </div>
@@ -875,32 +902,17 @@ export default function Home() {
                             ></input>
 
                             <div className={styles.description}>
-                                Please enter your API key, which will ensure
-                                that your assistant runs faster and better.
-                                <strong>
-                                    Rest assured that the API key you enter will
-                                    not be uploaded to our server, but will only
-                                    be stored locally in your browser, with no
-                                    risk of leakage. We will do our utmost to
-                                    protect your privacy and data security.
-                                </strong>
+                                {t('apiKeyDescription')}
                             </div>
 
                             <div className={styles.benefits}>
-                                Do not know how to get your api key?If you have
-                                a Open AI account, please visit{' '}
+                                {t('apiKeyHelp')}
                                 <Link
                                     href="https://platform.openai.com/account/api-keys"
                                     target="_blank"
                                 >
-                                    Open AI Platform API keys
+                                    Open AI Platform API KEYS
                                 </Link>{' '}
-                                to to view your API key list.If you do not have
-                                a chatGPT account, please click the button below
-                                to get a temporary API key, which may have slow
-                                access speed. Therefore, to ensure faster
-                                conversation, please use your own API key as
-                                much as possible.
                             </div>
                             <div className={styles.btnContainer}>
                                 <button
@@ -918,7 +930,7 @@ export default function Home() {
                                         });
                                     }}
                                 >
-                                    Save
+                                    {t('save')}
                                 </button>
                                 {/* <button
                                     className={styles.saveButton}

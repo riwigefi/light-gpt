@@ -1,0 +1,15 @@
+{
+    "robotAvatarSetting": "机器人头像设置",
+    "userAvatarSettings": "用户头像设置",
+    "systemRoleSettings": "系统角色设置",
+    "systemRoleDescription": "系统角色指生成的文本中的角色身份，可以是不同的人物、机器人或其他实体。通过设置不同的系统角色，您可以控制生成文本的情感和语气，以更好地适应特定场景的需求。",
+    "systemRoleHelp": "不知道如何定义系统角色？来试试 Awesome ChatGPT Prompts，选择您想要的系统角色：",
+    "apiKeySettings": "API KEY 设置",
+    "apiKeyDescription": "请填写您的API密钥，这将确保GPT响应更快、更好。请放心，您输入的API密钥不会上传到我们的服务器，而是仅在您的浏览器本地存储，不存在泄露的风险。我们会尽最大努力保护您的隐私和数据安全。",
+    "apiKeyHelp": "不知道如何获取API密钥？如果您有Open AI账户，请访问Open AI平台API密钥页面查看您的API密钥列表：",
+    "totalGranted": "已授权总量",
+    "totalAvailable": "可用总量",
+    "totalUsed": "已使用总量",
+    "expiresAt": "过期时间",
+    "save": "保存"
+}

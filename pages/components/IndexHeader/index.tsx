@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { getCurrentApiKeyBilling } from '../../../open.ai.service';
 
 import { Theme } from '../../../interface';
 
-import { ThemeLocalKey } from '../../../utils';
+import { ThemeLocalKey, formatTimestamp } from '../../../utils';
 
 import styles from './index.module.scss';
 
@@ -12,45 +14,70 @@ const IndexHeader: React.FC<{
     apiKey: string;
     theme: Theme;
     updateTheme: (theme: Theme) => void;
-
     toggleSystemMenuVisible: () => void;
 }> = ({ apiKey, theme, updateTheme, toggleSystemMenuVisible }) => {
+    const [isZh, setIsZh] = useState(true);
+
+    const { t, i18n } = useTranslation();
+
+    const changeLanguage = () => {
+        const newIsZh = !isZh;
+        i18n.changeLanguage(newIsZh ? 'zh' : 'en');
+        setIsZh(newIsZh);
+    };
+
     const [currentApiKeyBilling, setCurrentApiKeyBilling] = useState({
         totalGranted: 0,
         totalAvailable: 0,
         totalUsed: 0,
+        expiresAt: '',
     });
 
     useEffect(() => {
         if (!apiKey) return;
-        getCurrentApiKeyBilling(apiKey).then((res) => {
+        const getCurrentBilling = async () => {
+            const res = await getCurrentApiKeyBilling(apiKey);
             if (res.total_granted) {
                 setCurrentApiKeyBilling({
                     totalGranted: res.total_granted,
                     totalAvailable: res.total_available,
                     totalUsed: res.total_used,
+                    expiresAt: formatTimestamp(
+                        res.grants?.data?.[0]?.expires_at
+                    ),
                 });
             }
-        });
+        };
+        getCurrentBilling();
+        const timer = setInterval(() => {
+            getCurrentBilling();
+        }, 1000 * 60 * 2);
+        return () => {
+            clearInterval(timer);
+        };
     }, [apiKey]);
 
     return (
         <div className={styles.headerContainer}>
             <div className={styles.currentApiKeyBilling}>
                 <div className={styles.item}>
-                    <div className={styles.label}>total_granted:</div>
+                    <div className={styles.label}>{t('totalGranted')}:</div>
                     {apiKey ? currentApiKeyBilling.totalGranted.toFixed(3) : 0}$
                 </div>
                 <div className={styles.item}>
-                    <div className={styles.label}>total_available:</div>
+                    <div className={styles.label}>{t('totalAvailable')}:</div>
                     {apiKey
                         ? currentApiKeyBilling.totalAvailable.toFixed(3)
                         : 0}
                     $
                 </div>
                 <div className={styles.item}>
-                    <div className={styles.label}>total_used:</div>
+                    <div className={styles.label}>{t('totalUsed')}:</div>
                     {apiKey ? currentApiKeyBilling.totalUsed.toFixed(3) : 0}$
+                </div>
+                <div className={styles.item}>
+                    <div className={styles.label}>{t('expiresAt')}:</div>
+                    {apiKey ? currentApiKeyBilling.expiresAt : '未知'}
                 </div>
             </div>
 
@@ -64,6 +91,16 @@ const IndexHeader: React.FC<{
                 </div>
             </div>
             <div className={styles.sideMenus}>
+                <i
+                    className="fab fa-github"
+                    onClick={() => {
+                        window.open(
+                            'https://github.com/riwigefi/light-gpt',
+                            '_blank'
+                        );
+                    }}
+                ></i>
+
                 <div
                     className="themeToggleBtn"
                     onClick={() => {
@@ -86,16 +123,7 @@ const IndexHeader: React.FC<{
                         toggleSystemMenuVisible();
                     }}
                 ></i>
-
-                <i
-                    className="fab fa-github"
-                    onClick={() => {
-                        window.open(
-                            'https://github.com/riwigefi/light-gpt',
-                            '_blank'
-                        );
-                    }}
-                ></i>
+                <i className="fa fa-language" onClick={changeLanguage}></i>
             </div>
         </div>
     );

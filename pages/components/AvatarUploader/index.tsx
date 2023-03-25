@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 
+import { useTranslation } from 'next-i18next';
+
 import styles from './index.module.scss';
 
 const AvatarUploader: React.FC<{
@@ -61,6 +63,8 @@ const AvatarUploader: React.FC<{
         setAvatar((state) => ({ ...state, rotate: state.rotate + 90 }));
     };
 
+    const { t } = useTranslation();
+
     return (
         <div className={styles.avatarUploader}>
             <div className={styles.title}>{title || '头像设置'}</div>
@@ -111,7 +115,7 @@ const AvatarUploader: React.FC<{
                 />
             </div>
             <button className={styles.saveButton} onClick={handleSave}>
-                save
+                {t('save')}
             </button>
         </div>
     );

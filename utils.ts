@@ -64,6 +64,24 @@ export const readBlobAsDataURL = (blob: Blob): Promise<string> => {
     });
 };
 
+export const formatTimestamp = (timestamp: number) => {
+    const length = timestamp.toString().length;
+    if (length === 10) {
+        timestamp *= 1000; // 转换为毫秒
+    }
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const formattedDate =
+        year +
+        '/' +
+        (month > 9 ? month : `0${month}`) +
+        '/' +
+        (day > 9 ? day : `0${day}`);
+    return formattedDate;
+};
+
 export const ThemeLocalKey = 'light_gpt_theme';
 export const UserAvatarLocalKey = 'light_gpt_user_avatar';
 export const RobotAvatarLocalKey = 'light_gpt_robot_avatar';
