@@ -18,9 +18,9 @@ Demo: https://light-gpt.vercel.app
 
 ## Site Preview
 
-![Site Preview 001](public/light-gpt-001-min.png)
+![Site Preview Light Mode](public/light-mode-site.png)
 
-![Site Preview 002](public/light-gpt-002-min.png)
+![Site Preview Dark Mode](public/dark-mode-site.png)
 
 ## Local Deployment
 
@@ -73,7 +73,7 @@ docker pull whynotisme/light-gpt
 docker run -p 8080:80 whynotisme/light-gpt
 ```
 
-# Light-GPT（中文介绍）
+# Light-GPT
 
 Light-GPT 是一个基于 GPT-3.5-Turbo 模型的交互式网站项目，使用 Next.js 框架构建，使用 Vercel 云平台部署，是一个纯前端的轻量级应用。
 
@@ -92,9 +92,9 @@ Github 代码库: https://github.com/riwigefi/light-gpt
 
 ## 站点预览
 
-![Site Preview 001](public/light-gpt-001-min.png)
+![Site Preview Light Mode](public/light-mode-site.png)
 
-![Site Preview 002](public/light-gpt-002-min.png)
+![Site Preview Dark Mode](public/dark-mode-site.png)
 
 ## 本地部署
 
@@ -146,4 +146,4 @@ docker run -p 8080:80 whynotisme/light-gpt
 
 ## 重要提示
 
-**本地部署时，请务必保证你是科学上网环境，你可以正常访问 open ai 官网，如果不能，请不要设置 api key 进行调试，否则会有封号风险**
+**本地部署时，由于 OpenAi 风控政策，请务必保证你是科学上网环境，你可以正常访问 open ai 官网，如果不能，请不要设置 api key 进行调试，否则会有异常风险**
