@@ -28,6 +28,9 @@
     &.hide {
         display: none;
     }
+    div::-webkit-scrollbar {
+        width: 0px; /* 设置滚动条宽度 */
+    }
     .inner {
         height: 100%;
         overflow-y: auto;

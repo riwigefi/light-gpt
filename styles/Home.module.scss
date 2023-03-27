@@ -26,8 +26,9 @@
         }
         .divider {
             width: 90%;
-            height: 1px;
-            background-color: var(--aside-text-color);
+            height: 2px;
+            border-radius: 12px;
+            background-color: var(--text-color-normal);
             margin-top: 10px;
             margin-bottom: 10px;
         }
