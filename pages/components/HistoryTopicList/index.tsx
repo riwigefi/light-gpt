@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { toast } from 'react-toastify';
 
@@ -52,20 +52,34 @@ const HistoryTopicList: React.FC<{
         updateCurrentMessageList([]);
     };
 
+    const prevHistoryTopicCount = useRef(0);
+
     useEffect(() => {
-        if (currentMessageList.length === 0 || !activeTopicId) return;
-        const latestUserMessage =
-            currentMessageList
-                .slice()
-                .reverse()
-                .find((item) => item.role === ERole.user)?.content || '';
-        const newTopicName = latestUserMessage.slice(0, 10);
-        chatDB.updateTopicNameById(activeTopicId, newTopicName);
-        setHistoryTopicList((list) =>
-            list.map((o) =>
-                o.id === activeTopicId ? { ...o, name: newTopicName } : o
-            )
-        );
+        const updateCurrentTopicNameAfterChat = async () => {
+            if (
+                currentMessageList.length !== 0 &&
+                currentMessageList.length !== prevHistoryTopicCount.current &&
+                activeTopicId
+            ) {
+                const latestUserMessage =
+                    currentMessageList
+                        .slice()
+                        .reverse()
+                        .find((item) => item.role === ERole.user)?.content ||
+                    '';
+                const newTopicName = latestUserMessage.slice(0, 10);
+                await chatDB.updateTopicNameById(activeTopicId, newTopicName);
+                setHistoryTopicList((list) =>
+                    list.map((o) =>
+                        o.id === activeTopicId
+                            ? { ...o, name: newTopicName }
+                            : o
+                    )
+                );
+                prevHistoryTopicCount.current = currentMessageList.length;
+            }
+        };
+        updateCurrentTopicNameAfterChat();
     }, [currentMessageList, activeTopicId]);
 
     useEffect(() => {

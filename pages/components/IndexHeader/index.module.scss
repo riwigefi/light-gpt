@@ -60,6 +60,7 @@
         justify-content: flex-end;
         align-items: center;
         flex: 1;
+        padding-right: 26px;
         i {
             transform: scale(2);
         }
@@ -86,6 +87,7 @@
             position: fixed;
             top: 10px;
             right: 10px;
+            padding-right: 0;
             i {
                 transform: scale(1.2);
                 margin-left: 20px;
