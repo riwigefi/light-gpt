@@ -306,7 +306,7 @@ export default function Home() {
             newMessageList.push(newUserMessage);
             if (activeTopicId) {
                 // 更新
-                chatDB.addConversation({
+                await chatDB.addConversation({
                     topicId: activeTopicId,
                     ...newUserMessage,
                 });

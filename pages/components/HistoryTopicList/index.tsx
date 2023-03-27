@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 import { ChatService } from '../../../db';
 
-import { IMessage } from '../../../interface';
+import { ERole, IMessage } from '../../../interface';
 
 import styles from './index.module.scss';
 
@@ -22,6 +22,7 @@ const HistoryTopicList: React.FC<{
     hideMask: () => void;
 }> = ({
     historyTopicListVisible,
+    currentMessageList,
     updateCurrentMessageList,
     activeTopicId,
     changeActiveTopicId,
@@ -34,6 +35,7 @@ const HistoryTopicList: React.FC<{
 
     const generateTopic = () => {
         const topicId = uuid();
+
         const topicName = `Chat ${topicId.slice(0, 6)}`;
 
         const topic = {
@@ -51,10 +53,60 @@ const HistoryTopicList: React.FC<{
     };
 
     useEffect(() => {
-        chatDB.getTopics().then((topics) => {
-            setHistoryTopicList(topics || []);
-        });
-    }, []);
+        if (currentMessageList.length === 0 || !activeTopicId) return;
+        const latestUserMessage =
+            currentMessageList
+                .slice()
+                .reverse()
+                .find((item) => item.role === ERole.user)?.content || '';
+        const newTopicName = latestUserMessage.slice(0, 10);
+        chatDB.updateTopicNameById(activeTopicId, newTopicName);
+        setHistoryTopicList((list) =>
+            list.map((o) =>
+                o.id === activeTopicId ? { ...o, name: newTopicName } : o
+            )
+        );
+    }, [currentMessageList, activeTopicId]);
+
+    useEffect(() => {
+        const init = async () => {
+            const topics = await chatDB.getTopics();
+
+            if (topics.length === 0) {
+                // 生成一个新对话
+                const topicId = uuid();
+
+                const topicName = `Chat ${topicId.slice(0, 6)}`;
+
+                const topic = {
+                    id: topicId,
+                    name: topicName,
+                    createdAt: Date.now(),
+                };
+
+                chatDB.addTopic(topic);
+                let newHistoryTopicList = [];
+                newHistoryTopicList.unshift(topic);
+                changeActiveTopicId(topicId);
+                updateCurrentMessageList([]);
+                setHistoryTopicList(newHistoryTopicList);
+                return;
+            }
+
+            setHistoryTopicList(topics);
+            changeActiveTopicId(topics[0].id);
+
+            showMask();
+            // 找出点击的主题的历史对话
+            const currentMessageList = await chatDB.getConversationsByTopicId(
+                topics[0].id
+            );
+            updateCurrentMessageList(currentMessageList as IMessage[]);
+
+            hideMask();
+        };
+        init();
+    }, [changeActiveTopicId, updateCurrentMessageList, hideMask, showMask]);
 
     const [editingTopicName, setEditingTopicName] = useState(false);
     const [tempTopicName, setTempTopicName] = useState('');

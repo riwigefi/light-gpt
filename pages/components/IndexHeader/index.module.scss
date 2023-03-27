@@ -7,10 +7,11 @@
     box-sizing: border-box;
     padding: 20px;
     .currentApiKeyBilling {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: space-around;
-        height: 100%;
+        justify-content: space-between;
+        align-items: flex-start;
         font-size: 12px;
         .item {
             display: flex;
@@ -24,10 +25,11 @@
         }
     }
     .siteIntroduction {
+        flex: 1;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
-        flex: 1;
 
         .title {
             color: rgba(148, 163, 184, 1);
@@ -55,8 +57,9 @@
     }
     .sideMenus {
         display: flex;
+        justify-content: flex-end;
         align-items: center;
-
+        flex: 1;
         i {
             transform: scale(2);
         }
