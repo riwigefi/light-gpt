@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 
 import { ChatService } from '../../../db';
 
-import { IMessage, ERole } from '../../../interface';
+import { IMessage } from '../../../interface';
 
 import styles from './index.module.scss';
 
@@ -14,7 +14,6 @@ const chatDB = new ChatService();
 
 const HistoryTopicList: React.FC<{
     historyTopicListVisible: boolean;
-    toggleHistoryTopicListVisible: () => void;
     currentMessageList: IMessage[];
     updateCurrentMessageList: (messages: IMessage[]) => void;
     activeTopicId: string;
@@ -23,8 +22,6 @@ const HistoryTopicList: React.FC<{
     hideMask: () => void;
 }> = ({
     historyTopicListVisible,
-    toggleHistoryTopicListVisible,
-    currentMessageList,
     updateCurrentMessageList,
     activeTopicId,
     changeActiveTopicId,
@@ -36,13 +33,9 @@ const HistoryTopicList: React.FC<{
     >([]);
 
     const generateTopic = () => {
-        if (currentMessageList.length === 0) return;
-        const topicName =
-            currentMessageList
-                .find((item) => item.role === ERole.user)
-                ?.content?.slice(0, 10) ||
-            `主题${new Date().getTime().toFixed(10)}`;
         const topicId = uuid();
+        const topicName = `Chat ${topicId.slice(0, 6)}`;
+
         const topic = {
             id: topicId,
             name: topicName,
@@ -53,15 +46,7 @@ const HistoryTopicList: React.FC<{
         let newHistoryTopicList = historyTopicList.concat([]);
         newHistoryTopicList.unshift(topic);
         setHistoryTopicList(newHistoryTopicList);
-        currentMessageList.forEach((message) => {
-            chatDB.addConversation({
-                topicId: topicId,
-                id: message.id,
-                role: message.role,
-                content: message.content,
-                createdAt: message.createdAt,
-            });
-        });
+        changeActiveTopicId(topicId);
         updateCurrentMessageList([]);
     };
 
@@ -71,29 +56,24 @@ const HistoryTopicList: React.FC<{
         });
     }, []);
 
+    const [editingTopicName, setEditingTopicName] = useState(false);
+    const [tempTopicName, setTempTopicName] = useState('');
+
+    const [removingTopic, setRemovingTopic] = useState(false);
+
+    useEffect(() => {
+        setEditingTopicName(false);
+        setRemovingTopic(false);
+    }, [activeTopicId]);
+
     return (
         <>
-            <div
-                className={styles.historyTopicListVisibleToggle}
-                onClick={() => toggleHistoryTopicListVisible()}
-            >
-                {historyTopicListVisible ? (
-                    <i className="fas fa-chevron-left"></i>
-                ) : (
-                    <i className="fas fa-chevron-right"></i>
-                )}
-            </div>
             <div
                 className={`${styles.newChatBtn} ${
                     !historyTopicListVisible && styles.hide
                 }`}
                 onClick={() => {
-                    if (activeTopicId) {
-                        changeActiveTopicId('');
-                        updateCurrentMessageList([]);
-                        return;
-                    }
-                    // 新建主题，将当前对话信息存储在新建的主题下，然后清空messageList
+                    // 新建对话
                     generateTopic();
                 }}
             >
@@ -115,9 +95,6 @@ const HistoryTopicList: React.FC<{
                                     isActive && styles.active
                                 } `}
                                 onClick={async () => {
-                                    if (activeTopicId === '') {
-                                        generateTopic();
-                                    }
                                     changeActiveTopicId(item.id);
 
                                     showMask();
@@ -133,27 +110,117 @@ const HistoryTopicList: React.FC<{
                                     hideMask();
                                 }}
                             >
-                                <i className="fas fa-comment"></i>
-                                <div className={styles.topicName}>
-                                    {item.name}
-                                </div>
-                                <i
-                                    className={`fas fa-times ${styles.remove}`}
-                                    onClick={async () => {
-                                        await chatDB.deleteTopicById(item.id);
-                                        setHistoryTopicList((list) =>
-                                            list.filter((o) => o.id !== item.id)
-                                        );
-                                        updateCurrentMessageList([]);
-                                        changeActiveTopicId('');
-                                        toast.success(
-                                            'Successful deleted topic',
-                                            {
-                                                autoClose: 1000,
-                                            }
-                                        );
+                                {editingTopicName && isActive ? (
+                                    <div className={styles.inputContainer}>
+                                        <input
+                                            className={styles.editingTopicName}
+                                            type="text"
+                                            value={tempTopicName}
+                                            onChange={(e) => {
+                                                setTempTopicName(
+                                                    e.target.value
+                                                );
+                                            }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <i className="fas fa-comment"></i>
+                                        <div className={styles.topicName}>
+                                            {item.name}
+                                        </div>
+                                    </>
+                                )}
+                                <div
+                                    className={styles.action}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                     }}
-                                ></i>
+                                >
+                                    {(editingTopicName || removingTopic) &&
+                                    isActive ? (
+                                        <>
+                                            <i
+                                                className="fas fa-check"
+                                                onClick={async () => {
+                                                    if (editingTopicName) {
+                                                        // 更新主题名字
+                                                        await chatDB.updateTopicNameById(
+                                                            item.id,
+                                                            tempTopicName
+                                                        );
+                                                        setHistoryTopicList(
+                                                            (list) =>
+                                                                list.map((o) =>
+                                                                    o.id ===
+                                                                    item.id
+                                                                        ? {
+                                                                              ...o,
+                                                                              name: tempTopicName,
+                                                                          }
+                                                                        : o
+                                                                )
+                                                        );
+                                                        toast.success(
+                                                            'Update Topic Name Successful',
+                                                            {
+                                                                autoClose: 500,
+                                                            }
+                                                        );
+                                                    }
+                                                    if (removingTopic) {
+                                                        await chatDB.deleteTopicById(
+                                                            item.id
+                                                        );
+                                                        setHistoryTopicList(
+                                                            (list) =>
+                                                                list.filter(
+                                                                    (o) =>
+                                                                        o.id !==
+                                                                        item.id
+                                                                )
+                                                        );
+                                                        updateCurrentMessageList(
+                                                            []
+                                                        );
+                                                        changeActiveTopicId('');
+                                                        toast.success(
+                                                            'Successful deleted topic',
+                                                            {
+                                                                autoClose: 500,
+                                                            }
+                                                        );
+                                                    }
+                                                    setEditingTopicName(false);
+                                                    setRemovingTopic(false);
+                                                }}
+                                            ></i>
+                                            <i
+                                                className="fas fa-times"
+                                                onClick={() => {
+                                                    setEditingTopicName(false);
+                                                    setRemovingTopic(false);
+                                                }}
+                                            ></i>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <i
+                                                className="fas fa-pencil"
+                                                onClick={() => {
+                                                    setEditingTopicName(true);
+                                                    setTempTopicName(item.name);
+                                                }}
+                                            ></i>
+                                            <i
+                                                className="fas fa-trash"
+                                                onClick={async () => {
+                                                    setRemovingTopic(true);
+                                                }}
+                                            ></i>
+                                        </>
+                                    )}
+                                </div>
                             </div>
                         );
                     })}

@@ -224,7 +224,8 @@ export default function Home() {
 
     const [messageList, setMessageList] = useState<IMessage[]>([]);
 
-    const removeMessageById = useCallback((id: string) => {
+    const removeMessageById = useCallback(async (id: string) => {
+        await chatDB.deleteConversationById(id);
         setMessageList((list) => list.filter((item) => item.id !== id));
     }, []);
 
@@ -495,318 +496,377 @@ export default function Home() {
         setActiveTopicId(id);
     }, []);
 
-    const [historyTopicListVisible, setHistoryDialogueListVisible] =
-        useState(true);
+    const [asideVisible, setAsideVisible] = useState(true);
 
-    const toggleHistoryTopicListVisible = useCallback(() => {
-        setHistoryDialogueListVisible((visible) => !visible);
+    const toggleAsideVisible = useCallback(() => {
+        setAsideVisible((visible) => !visible);
     }, []);
 
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const SystemMenus = [
         {
             label: t('robotAvatarSetting'),
+            iconName: 'fa-robot',
             value: SystemSettingMenu.robotAvatarSettings,
         },
         {
             label: t('userAvatarSettings'),
+            iconName: 'fa-user',
             value: SystemSettingMenu.userAvatarSettings,
         },
         {
             label: t('systemRoleSettings'),
+            iconName: 'fa-id-badge',
             value: SystemSettingMenu.systemRoleSettings,
         },
         {
             label: t('apiKeySettings'),
+            iconName: 'fa-key',
             value: SystemSettingMenu.apiKeySettings,
         },
     ];
 
+    const [isZh, setIsZh] = useState(true);
+
+    const changeLanguage = () => {
+        const newIsZh = !isZh;
+        i18n.changeLanguage(newIsZh ? 'zh' : 'en');
+        setIsZh(newIsZh);
+    };
+
     return (
         <div id="app" className={styles.app} data-theme={theme}>
-            <HeadMeatSetup></HeadMeatSetup>
+            <aside className={`${styles.aside} ${asideVisible && styles.show}`}>
+                <div
+                    className={`${styles.asideToggle} ${
+                        asideVisible && styles.asideShow
+                    }`}
+                    onClick={toggleAsideVisible}
+                >
+                    {asideVisible ? (
+                        <i className="fas fa-chevron-left"></i>
+                    ) : (
+                        <i className="fas fa-chevron-right"></i>
+                    )}
+                </div>
+                {/** 历史对话 */}
+                <div className={styles.historyTopicListContainer}>
+                    <HistoryTopicList
+                        historyTopicListVisible={asideVisible}
+                        currentMessageList={messageList}
+                        updateCurrentMessageList={updateCurrentMessageList}
+                        activeTopicId={activeTopicId}
+                        changeActiveTopicId={changeActiveTopicId}
+                        showMask={showMask}
+                        hideMask={hideMask}
+                    />
+                </div>
 
-            <ToastContainer></ToastContainer>
+                <div className={styles.divider}></div>
 
-            {/** 历史对话记录 */}
-            <div
-                className={`${styles.historyTopicListContainer} ${
-                    !historyTopicListVisible && styles.hide
-                }`}
-            >
-                <HistoryTopicList
-                    historyTopicListVisible={historyTopicListVisible}
-                    toggleHistoryTopicListVisible={
-                        toggleHistoryTopicListVisible
-                    }
-                    currentMessageList={messageList}
-                    updateCurrentMessageList={updateCurrentMessageList}
-                    activeTopicId={activeTopicId}
-                    changeActiveTopicId={changeActiveTopicId}
-                    showMask={showMask}
-                    hideMask={hideMask}
-                />
-            </div>
-
-            <div
-                className={`${styles.systemSettingMenus} ${
-                    systemMenuVisible && styles.show
-                }`}
-            >
-                {SystemMenus.map((menu) => (
+                {/** 站点设置 */}
+                <div className={styles.siteSettings}>
                     <div
-                        key={menu.value}
                         className={styles.menu}
                         onClick={() => {
-                            setActiveSystemMenu(menu.value);
+                            setTheme(theme === 'light' ? 'dark' : 'light');
+                            window.localStorage.setItem(
+                                ThemeLocalKey,
+                                theme === 'light' ? 'dark' : 'light'
+                            );
                         }}
                     >
-                        {menu.label}
-                    </div>
-                ))}
-            </div>
-            <div className={styles.header}>
-                <IndexHeader
-                    apiKey={apiKey}
-                    theme={theme}
-                    updateTheme={updateTheme}
-                    toggleSystemMenuVisible={toggleSystemMenuVisible}
-                />
-            </div>
-            <div className={styles.main}>
-                <div
-                    id="chatHistory"
-                    className={styles.chatHistory}
-                    ref={(e) => (chatHistoryEle.current = e)}
-                >
-                    {messageList
-                        .filter((item) => item.role !== ERole.system)
-                        .map((item) => (
-                            <MessageItem
-                                key={item.id}
-                                id={item.id}
-                                role={item.role}
-                                avatar={
-                                    item.role === ERole.user
-                                        ? userAvatar
-                                        : robotAvatar
-                                }
-                                message={item.content}
-                                removeMessageById={removeMessageById}
-                            />
-                        ))}
-                    {loading && currentAssistantMessage.length > 0 && (
-                        <MessageItem
-                            id={uuid()}
-                            role={ERole.assistant}
-                            avatar={robotAvatar}
-                            message={currentAssistantMessage}
-                        />
-                    )}
-                    <div className={styles.placeholder}>
-                        <div className={styles.child}></div>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.footer}>
-                {serviceErrorMessage !== '' && (
-                    <div className={styles.openAiServiceError}>
-                        {serviceErrorMessage}
-                    </div>
-                )}
-
-                <div className={styles.action}></div>
-                <div className={styles.middle}>
-                    <div className={styles.textareaContainer}>
-                        {/** mobile regenerate and stop action */}
-                        <div className={styles.mobileAction}>
-                            {loading ? (
-                                <div
-                                    className={styles.btn}
-                                    onClick={() => {
-                                        if (controller.current) {
-                                            controller.current.abort();
-                                            setLoading(false);
-                                            archiveCurrentMessage(
-                                                currentAssistantMessage
-                                            );
-                                        }
-                                    }}
-                                >
-                                    Stop
-                                </div>
-                            ) : (
-                                <div
-                                    className={styles.btn}
-                                    onClick={() =>
-                                        chatGPTTurboWithLatestUserPrompt(true)
-                                    }
-                                >
-                                    Regenerate
-                                </div>
-                            )}
-                        </div>
-                        <textarea
-                            className={styles.userPrompt}
-                            onChange={(e) => {
-                                setCurrentUserMessage(e.target.value);
-                            }}
-                            onInput={() => {
-                                if (
-                                    userPromptRef.current &&
-                                    userPromptRef.current.scrollHeight > 50
-                                ) {
-                                    userPromptRef.current.style.height =
-                                        userPromptRef.current.scrollHeight +
-                                        2 +
-                                        'px';
-                                }
-                            }}
-                            value={currentUserMessage}
-                            ref={(e) => {
-                                userPromptRef.current = e;
-                            }}
-                            placeholder={
-                                loading
-                                    ? 'ai is thinking...'
-                                    : 'type any text to ask questions or type "img-your prompt" to generate img'
-                            }
-                            rows={1}
-                            onKeyDown={(event) => {
-                                // event.key 的值不受操作系统和键盘布局的影响，它始终表示按下的是哪个字符键。
-                                // pc desktop
-                                // if (
-                                //     !windowState.current.isMobile &&
-                                //     (event.code === 'Enter' ||
-                                //         event.code === 'Done')
-                                // ) {
-                                //     event.preventDefault();
-                                //     if (windowState.current.isUsingComposition)
-                                //         return;
-                                //     chatGPTTurboWithLatestUserPrompt(false);
-                                // }
-
-                                // change
-
-                                if (!windowState.current.isMobile) {
-                                    if (
-                                        event.code === 'Enter' &&
-                                        !event.shiftKey &&
-                                        (event.metaKey || event.ctrlKey)
-                                    ) {
-                                        // 按下 "Command/Ctrl" + "Enter"，输入换行符
-                                        const newValue =
-                                            currentUserMessage + '\n';
-                                        setCurrentUserMessage(newValue);
-                                        event.preventDefault();
-                                    } else if (
-                                        event.code === 'Enter' &&
-                                        !event.shiftKey
-                                    ) {
-                                        // 按下 "Enter"，发送请求
-                                        if (
-                                            windowState.current
-                                                .isUsingComposition
-                                        )
-                                            return;
-                                        chatGPTTurboWithLatestUserPrompt(false);
-                                        event.preventDefault();
-                                    }
-                                }
-
-                                // mobile desktop
-                                if (
-                                    windowState.current.isMobile &&
-                                    (event.key === 'Enter' ||
-                                        event.key === 'Done')
-                                ) {
-                                    (
-                                        document.activeElement as HTMLElement
-                                    ).blur();
-                                }
-                            }}
-                            onBlur={() => {
-                                if (windowState.current.isMobile) {
-                                    chatGPTTurboWithLatestUserPrompt(false);
-                                }
-                            }}
-                            onCompositionStart={(e) => {
-                                windowState.current.isUsingComposition = true;
-                            }}
-                            onCompositionEnd={(e) => {
-                                windowState.current.isUsingComposition = false;
-                            }}
-                        />
-                        <div className={styles.submit}>
-                            {loading ? (
-                                <div className={styles.spinner}></div>
-                            ) : (
-                                <i
-                                    className="fas fa-paper-plane"
-                                    style={{ transform: 'scale(1.2)' }}
-                                    onClick={() =>
-                                        chatGPTTurboWithLatestUserPrompt(false)
-                                    }
-                                ></i>
-                            )}
+                        {theme === 'light' ? (
+                            <i className="fas fa-sun"></i>
+                        ) : (
+                            <i className="fas fa-moon"></i>
+                        )}
+                        <div>
+                            {theme === 'dark'
+                                ? t('changeLightMode')
+                                : t('changeDarkMode')}
                         </div>
                     </div>
-                    <div className={styles.siteDescription}>
-                        <span>Made by wjm</span>
-                        <span>｜</span>
-                        <span>Just have fun</span>
+                    <div className={styles.menu} onClick={changeLanguage}>
+                        <i className={`fas fa-language`}></i>
+                        <div>{t('changeLanguage')}</div>
                     </div>
-                </div>
-                <div className={styles.action}>
-                    {loading ? (
+                    {SystemMenus.map((menu) => (
                         <div
-                            className={styles.btn}
+                            key={menu.value}
+                            className={styles.menu}
                             onClick={() => {
-                                if (controller.current) {
-                                    controller.current.abort();
-                                    setLoading(false);
-                                    archiveCurrentMessage(
-                                        currentAssistantMessage
-                                    );
-                                }
+                                setActiveSystemMenu(menu.value);
                             }}
                         >
-                            Stop
+                            <i className={`fas ${menu.iconName}`}></i>
+                            <div>{menu.label}</div>
+                        </div>
+                    ))}
+                </div>
+            </aside>
+
+            <main className={styles.conversationContent}>
+                <HeadMeatSetup></HeadMeatSetup>
+
+                <ToastContainer></ToastContainer>
+
+                <div className={styles.header}>
+                    <IndexHeader
+                        apiKey={apiKey}
+                        theme={theme}
+                        updateTheme={updateTheme}
+                        toggleSystemMenuVisible={toggleSystemMenuVisible}
+                    />
+                </div>
+                <div className={styles.main}>
+                    {apiKey ? (
+                        <div
+                            id="chatHistory"
+                            className={styles.chatHistory}
+                            ref={(e) => (chatHistoryEle.current = e)}
+                        >
+                            {messageList
+                                .filter((item) => item.role !== ERole.system)
+                                .map((item) => (
+                                    <MessageItem
+                                        key={item.id}
+                                        id={item.id}
+                                        role={item.role}
+                                        avatar={
+                                            item.role === ERole.user
+                                                ? userAvatar
+                                                : robotAvatar
+                                        }
+                                        message={item.content}
+                                        removeMessageById={removeMessageById}
+                                    />
+                                ))}
+                            {loading && currentAssistantMessage.length > 0 && (
+                                <MessageItem
+                                    id={uuid()}
+                                    role={ERole.assistant}
+                                    avatar={robotAvatar}
+                                    message={currentAssistantMessage}
+                                />
+                            )}
+                            <div className={styles.placeholder}>
+                                <div className={styles.child}></div>
+                            </div>
                         </div>
                     ) : (
-                        <div
-                            className={styles.btn}
-                            onClick={() =>
-                                chatGPTTurboWithLatestUserPrompt(true)
-                            }
-                        >
-                            Regenerate
+                        <div className={styles.apiKeyRequiredTip}>
+                            <div className={styles.title}>
+                                OpenAI API Key Required
+                            </div>
+                            <div className={styles.desc}>
+                                {t('apiKeyRequiredTip1')}
+                            </div>
+                            <div className={styles.desc}>
+                                {t('apiKeyRequiredTip2')}
+                                <Link href="https://openai.com" target="_blank">
+                                    Open Ai Platform
+                                </Link>
+                            </div>
                         </div>
                     )}
                 </div>
-            </div>
-            <div
-                className={`${styles.extraFunction} ${
-                    !messageList.length && styles.noMessage
-                }`}
-            >
-                <i className="fas fa-image" onClick={convertToImage}></i>
-                <i className="fas fa-file-pdf" onClick={convertToPDF}></i>
-                <i
-                    className="fas fa-trash-alt"
-                    onClick={() => {
-                        if (messageList.length === 0) {
-                            toast.warn(
-                                'No question and answer content available',
-                                { autoClose: 1000 }
-                            );
-                            return;
-                        }
-                        setMessageList([]);
-                    }}
-                ></i>
-            </div>
+                <div className={styles.footer}>
+                    {serviceErrorMessage !== '' && (
+                        <div className={styles.openAiServiceError}>
+                            {serviceErrorMessage}
+                        </div>
+                    )}
+
+                    <div className={styles.action}></div>
+                    <div className={styles.middle}>
+                        <div className={styles.textareaContainer}>
+                            {/** mobile regenerate and stop action */}
+                            <div className={styles.mobileAction}>
+                                {loading ? (
+                                    <div
+                                        className={styles.btn}
+                                        onClick={() => {
+                                            if (controller.current) {
+                                                controller.current.abort();
+                                                setLoading(false);
+                                                archiveCurrentMessage(
+                                                    currentAssistantMessage
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        Stop
+                                    </div>
+                                ) : (
+                                    <div
+                                        className={styles.btn}
+                                        onClick={() =>
+                                            chatGPTTurboWithLatestUserPrompt(
+                                                true
+                                            )
+                                        }
+                                    >
+                                        Regenerate
+                                    </div>
+                                )}
+                            </div>
+                            <textarea
+                                className={styles.userPrompt}
+                                onChange={(e) => {
+                                    setCurrentUserMessage(e.target.value);
+                                }}
+                                onInput={() => {
+                                    if (
+                                        userPromptRef.current &&
+                                        userPromptRef.current.scrollHeight > 50
+                                    ) {
+                                        userPromptRef.current.style.height =
+                                            userPromptRef.current.scrollHeight +
+                                            2 +
+                                            'px';
+                                    }
+                                }}
+                                value={currentUserMessage}
+                                ref={(e) => {
+                                    userPromptRef.current = e;
+                                }}
+                                placeholder={
+                                    loading
+                                        ? 'ai is thinking...'
+                                        : 'ask questions or type "img-prompt" to generate img'
+                                }
+                                rows={1}
+                                onKeyDown={(event) => {
+                                    // event.key 的值不受操作系统和键盘布局的影响，它始终表示按下的是哪个字符键。
+                                    // pc desktop
+
+                                    if (!windowState.current.isMobile) {
+                                        if (
+                                            event.code === 'Enter' &&
+                                            !event.shiftKey &&
+                                            (event.metaKey || event.ctrlKey)
+                                        ) {
+                                            // 按下 "Command/Ctrl" + "Enter"，输入换行符
+                                            const newValue =
+                                                currentUserMessage + '\n';
+                                            setCurrentUserMessage(newValue);
+                                            event.preventDefault();
+                                        } else if (
+                                            event.code === 'Enter' &&
+                                            !event.shiftKey
+                                        ) {
+                                            // 按下 "Enter"，发送请求
+                                            if (
+                                                windowState.current
+                                                    .isUsingComposition
+                                            )
+                                                return;
+                                            chatGPTTurboWithLatestUserPrompt(
+                                                false
+                                            );
+                                            event.preventDefault();
+                                        }
+                                    }
+
+                                    // mobile desktop
+                                    if (
+                                        windowState.current.isMobile &&
+                                        (event.key === 'Enter' ||
+                                            event.key === 'Done')
+                                    ) {
+                                        (
+                                            document.activeElement as HTMLElement
+                                        ).blur();
+                                    }
+                                }}
+                                onBlur={() => {
+                                    if (windowState.current.isMobile) {
+                                        chatGPTTurboWithLatestUserPrompt(false);
+                                    }
+                                }}
+                                onCompositionStart={(e) => {
+                                    windowState.current.isUsingComposition =
+                                        true;
+                                }}
+                                onCompositionEnd={(e) => {
+                                    windowState.current.isUsingComposition =
+                                        false;
+                                }}
+                            />
+                            <div className={styles.submit}>
+                                {loading ? (
+                                    <div className={styles.spinner}></div>
+                                ) : (
+                                    <i
+                                        className="fas fa-paper-plane"
+                                        style={{ transform: 'scale(1.2)' }}
+                                        onClick={() =>
+                                            chatGPTTurboWithLatestUserPrompt(
+                                                false
+                                            )
+                                        }
+                                    ></i>
+                                )}
+                            </div>
+                        </div>
+                        <div className={styles.siteDescription}>
+                            <span>Made by wjm</span>
+                            <span>｜</span>
+                            <span>Just have fun</span>
+                        </div>
+                    </div>
+                    <div className={styles.action}>
+                        {loading ? (
+                            <div
+                                className={styles.btn}
+                                onClick={() => {
+                                    if (controller.current) {
+                                        controller.current.abort();
+                                        setLoading(false);
+                                        archiveCurrentMessage(
+                                            currentAssistantMessage
+                                        );
+                                    }
+                                }}
+                            >
+                                Stop
+                            </div>
+                        ) : (
+                            <div
+                                className={styles.btn}
+                                onClick={() =>
+                                    chatGPTTurboWithLatestUserPrompt(true)
+                                }
+                            >
+                                Regenerate
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div
+                    className={`${styles.extraFunction} ${
+                        !messageList.length && styles.noMessage
+                    }`}
+                >
+                    <i className="fas fa-image" onClick={convertToImage}></i>
+                    <i className="fas fa-file-pdf" onClick={convertToPDF}></i>
+                    <i
+                        className="fas fa-trash-alt"
+                        onClick={() => {
+                            if (messageList.length === 0) {
+                                toast.warn(
+                                    'No question and answer content available',
+                                    { autoClose: 1000 }
+                                );
+                                return;
+                            }
+                            setMessageList([]);
+                        }}
+                    ></i>
+                </div>
+            </main>
 
             <div
                 className={`${styles.modal} ${

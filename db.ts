@@ -57,6 +57,10 @@ export class ChatService {
         return await this.db.conversations.add(conversation);
     }
 
+    async deleteConversationById(conversationId: string): Promise<void> {
+        await this.db.conversations.where('id').equals(conversationId).delete();
+    }
+
     async addTopic(topic: Topic): Promise<string> {
         return await this.db.topics.add(topic);
     }

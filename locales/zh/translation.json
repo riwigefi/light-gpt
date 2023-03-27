@@ -1,4 +1,7 @@
 {
+    "changeLanguage": "切换语言",
+    "changeDarkMode": "浅色模式",
+    "changeLightMode": "深色模式",
     "robotAvatarSetting": "机器人头像设置",
     "userAvatarSettings": "用户头像设置",
     "systemRoleSettings": "系统角色设置",
@@ -11,5 +14,8 @@
     "totalAvailable": "可用总量",
     "totalUsed": "已使用总量",
     "expiresAt": "过期时间",
-    "save": "保存"
+    "conversation": "新的对话",
+    "save": "保存",
+    "apiKeyRequiredTip1": "请在侧边栏左下角设置您的OpenAI API密钥",
+    "apiKeyRequiredTip2": "如果您没有OpenAI API密钥，可以在这里获取："
 }

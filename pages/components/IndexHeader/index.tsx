@@ -15,16 +15,8 @@ const IndexHeader: React.FC<{
     theme: Theme;
     updateTheme: (theme: Theme) => void;
     toggleSystemMenuVisible: () => void;
-}> = ({ apiKey, theme, updateTheme, toggleSystemMenuVisible }) => {
-    const [isZh, setIsZh] = useState(true);
-
-    const { t, i18n } = useTranslation();
-
-    const changeLanguage = () => {
-        const newIsZh = !isZh;
-        i18n.changeLanguage(newIsZh ? 'zh' : 'en');
-        setIsZh(newIsZh);
-    };
+}> = ({ apiKey }) => {
+    const { t } = useTranslation();
 
     const [currentApiKeyBilling, setCurrentApiKeyBilling] = useState({
         totalGranted: 0,
@@ -100,30 +92,6 @@ const IndexHeader: React.FC<{
                         );
                     }}
                 ></i>
-
-                <div
-                    className="themeToggleBtn"
-                    onClick={() => {
-                        updateTheme(theme === 'light' ? 'dark' : 'light');
-                        window.localStorage.setItem(
-                            ThemeLocalKey,
-                            theme === 'light' ? 'dark' : 'light'
-                        );
-                    }}
-                >
-                    {theme === 'light' ? (
-                        <i className="fas fa-moon"></i>
-                    ) : (
-                        <i className="fas fa-sun"></i>
-                    )}
-                </div>
-                <i
-                    className="fas fa-cog"
-                    onClick={() => {
-                        toggleSystemMenuVisible();
-                    }}
-                ></i>
-                <i className="fa fa-language" onClick={changeLanguage}></i>
             </div>
         </div>
     );

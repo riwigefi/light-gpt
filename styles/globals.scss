@@ -2,6 +2,19 @@ div {
     box-sizing: border-box;
 }
 
+div::-webkit-scrollbar {
+    width: 2px; /* 设置滚动条宽度 */
+}
+
+div::-webkit-scrollbar-thumb {
+    background-color: #cccccc; /* 设置滚动条滑块颜色 */
+    border-radius: 4px; /* 设置滑块圆角 */
+}
+
+div::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* 设置滚动条背景颜色 */
+}
+
 i {
     cursor: pointer;
 }

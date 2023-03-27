@@ -5,14 +5,13 @@
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
-    padding: 0 20px;
+    padding: 20px;
     .currentApiKeyBilling {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
         height: 100%;
         font-size: 12px;
-
         .item {
             display: flex;
             align-items: center;
@@ -28,6 +27,8 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        flex: 1;
+
         .title {
             color: rgba(148, 163, 184, 1);
             font-size: 2rem;
@@ -55,8 +56,8 @@
     .sideMenus {
         display: flex;
         align-items: center;
+
         i {
-            margin-left: 40px;
             transform: scale(2);
         }
     }
