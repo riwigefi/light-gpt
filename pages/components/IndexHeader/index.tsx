@@ -43,7 +43,7 @@ const IndexHeader: React.FC<{
         getCurrentBilling();
         const timer = setInterval(() => {
             getCurrentBilling();
-        }, 1000 * 60 * 2);
+        }, 1000 * 60 * 60 * 6);
         return () => {
             clearInterval(timer);
         };
