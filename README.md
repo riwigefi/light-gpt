@@ -15,6 +15,7 @@ Demo: https://light-gpt.vercel.app
    Dialogues support image export and PDF export.
 5. The application is adapted for both PC and mobile devices, making it convenient to use.
 6. DIY, supporting setting user avatars and AI avatars.
+7. Support generating images based on text.
 
 ## Site Preview
 
@@ -51,9 +52,9 @@ The project will now be available for preview at http://localhost:3000. Enter yo
 
 To deploy Light-GPT on Vercel's cloud platform:
 
-1. Register for a Vercel account at https://vercel.com. A mobile verification code is required.
+1. Register for a Vercel account at [Vercel](https://vercel.com). A mobile verification code is required.
 
-2. Fork the https://github.com/riwigefi/light-gpt repository to your own Github account.
+2. Fork the [light-gpt](https://github.com/riwigefi/light-gpt) repository to your own Github account.
 
 3. Log in to the Vercel platform, click "Add New", select "Project", and then import the Github project you just forked. Click "Deploy".
 
@@ -89,6 +90,7 @@ Github 代码库: https://github.com/riwigefi/light-gpt
 4. AI 回复支持多种语法高亮和一键复制代码功能，针对编程相关问题。对话支持图片和 PDF 导出。
 5. 应用适配了 PC 和 Mobile 设备，方便使用。
 6. 支持 DIY，支持设置用户头像和 AI 头像。
+7. 支持根据文字生成图片
 
 ## 站点预览
 
@@ -123,9 +125,8 @@ pnpm run dev
 
 ## Vercel 线上部署
 
-1. 注册一个 Vercel 云平台部署账号，访问 https://vercel.com，需要国外的手机验证码校验。
-
-2. 将 https://github.com/riwigefi/light-gpt 这个仓库 fork 到你的 Github。
+1. 注册一个 Vercel 云平台部署账号，访问 [Vercel](https://vercel.com)。
+2. 将 [light-gpt](https://github.com/riwigefi/light-gpt) 当前仓库 fork 到你的 Github。
 3. 登录 Vercel 平台，点击 "Add New"，选择 "Project"，然后 import 刚刚 fork 的 Github 项目，点击部署即可。
 
 ## Docker 本地部署
