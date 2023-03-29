@@ -5,7 +5,7 @@
     overflow: hidden;
     .aside {
         width: 0;
-        height: 100vh;
+        height: 100%;
         overflow: hidden;
         background-color: var(--aside-bg);
         color: var(--aside-text-color);
@@ -80,7 +80,7 @@
     }
     .conversationContent {
         flex: 1;
-        height: 100vh;
+        height: 100%;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -463,6 +463,7 @@
         }
 
         .conversationContent {
+            height: 100%;
             .main {
                 .apiKeyRequiredTip {
                     .title {
