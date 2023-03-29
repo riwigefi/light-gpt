@@ -537,7 +537,10 @@ export default function Home() {
 
     return (
         <div id="app" className={styles.app} data-theme={theme}>
-            <aside className={`${styles.aside} ${asideVisible && styles.show}`}>
+            <aside
+                id="appAside"
+                className={`${styles.aside} ${asideVisible && styles.show}`}
+            >
                 <div
                     className={`${styles.asideToggle} ${
                         asideVisible && styles.asideShow

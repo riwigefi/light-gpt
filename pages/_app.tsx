@@ -17,8 +17,10 @@ function App({ Component, pageProps }: AppProps) {
             )
         ) {
             const app = document.querySelector('#app') as HTMLElement;
-            if (!app) return;
+            const appAside = document.querySelector('#appAside') as HTMLElement;
+            if (!app || !appAside) return;
             app.style.height = window.innerHeight + 'px';
+            appAside.style.height = window.innerHeight + 'px';
         }
     }, []);
     return <Component {...pageProps} />;
