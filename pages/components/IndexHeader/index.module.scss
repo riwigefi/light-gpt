@@ -71,8 +71,7 @@
     .headerContainer {
         padding: 0;
         .currentApiKeyBilling {
-            transform: scale(0);
-            width: 1px;
+            display: none;
         }
         .siteIntroduction {
             flex: 1;

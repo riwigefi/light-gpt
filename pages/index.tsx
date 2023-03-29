@@ -845,6 +845,7 @@ export default function Home() {
                         )}
                     </div>
                 </div>
+                {/** extra function menus */}
                 <div
                     className={`${styles.extraFunction} ${
                         !messageList.length && styles.noMessage
@@ -992,15 +993,6 @@ export default function Home() {
                                 >
                                     {t('save')}
                                 </button>
-                                {/* <button
-                                    className={styles.saveButton}
-                                    onClick={() => {
-                                      
-                                        setActiveSystemMenu('');
-                                    }}
-                                >
-                                    Get API Key
-                                </button> */}
                             </div>
                         </div>
                     )}
@@ -1013,6 +1005,9 @@ export default function Home() {
                     <div className={styles.loadingSpinner}></div>
                 </div>
             )}
+
+            {/** mobile aside show mask */}
+            {asideVisible && <div className={styles.mobileAsideShowMask}></div>}
         </div>
     );
 }

@@ -39,6 +39,8 @@
             justify-content: center;
             align-items: flex-start;
             padding-left: 2vw;
+            flex-shrink: 0;
+            height: 180px;
             .menu {
                 height: 30px;
                 display: flex;
@@ -427,6 +429,10 @@
     a {
         color: var(--text-color-dark);
     }
+
+    .mobileAsideShowMask {
+        display: none;
+    }
 }
 
 // Mobile devices,iPad,Tablets
@@ -436,7 +442,6 @@
         height: 100vh;
         display: flex;
         overflow: hidden;
-
         .aside {
             position: fixed;
             top: 0;
@@ -450,12 +455,23 @@
             .asideToggle {
                 &.asideShow {
                     left: 50vw;
+                    i {
+                        color: var(--light-bg-color);
+                    }
                 }
             }
         }
 
         .conversationContent {
             .main {
+                .apiKeyRequiredTip {
+                    .title {
+                        font-size: 14px;
+                    }
+                    .desc {
+                        font-size: 12px;
+                    }
+                }
                 .chatHistory {
                     .placeholder {
                         width: 96vw;
@@ -632,6 +648,18 @@
             .buttonsContainer {
                 justify-content: space-around;
             }
+        }
+
+        .mobileAsideShowMask {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--text-color-dark);
+            opacity: 0.8;
+            z-index: 1;
         }
     }
 }
