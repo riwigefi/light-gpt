@@ -47,6 +47,7 @@ import {
     SystemRoleLocalKey,
     APIKeyLocalKey,
     GenerateImagePromptPrefix,
+    formatTimestamp
 } from '../utils';
 
 const chatDB = new ChatService();
@@ -108,6 +109,7 @@ export default function Home() {
         totalGranted: 0,
         totalAvailable: 0,
         totalUsed: 0,
+        expiresAt: ''
     });
 
     useEffect(() => {
@@ -118,6 +120,9 @@ export default function Home() {
                     totalGranted: res.total_granted,
                     totalAvailable: res.total_available,
                     totalUsed: res.total_used,
+                    expiresAt: formatTimestamp(
+                        res.grants?.data?.[0]?.expires_at
+                    ),
                 });
             }
         });
