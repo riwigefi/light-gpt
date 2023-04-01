@@ -6,16 +6,17 @@
     "userAvatarSettings": "User Avatar ",
     "systemRoleSettings": "System Role ",
     "systemRoleDescription": "System role refers to the role identity in the generated text, which can be different characters, robots, or other entities. By setting different system roles, you can control the emotions and tone of the generated text to better adapt to the needs of specific scenarios.",
-    "systemRoleHelp": "Do not know how to define system role? Come Awesome ChatGPT Prompts to choose the system role you want: ",
+    "systemRoleHelp": "Do not know how to define system role? Come Prompts to choose the system role you want: ",
     "apiKeySettings": "API KEY",
     "apiKeyDescription": "Please enter your API key, which will ensure that your assistant runs faster and better.Rest assured that the API key you enter will not be uploaded to our server, but will only be stored locally in your browser, with no risk of leakage. We will do our utmost to protect your privacy and data security.",
-    "apiKeyHelp": "Do not know how to get your api key?If you have a Open AI account, please visit Open AI Platform API keys to to view your API key list: ",
+    "apiKeyHelp": "Do not know how to get your api key?",
     "totalGranted": "total_granted",
     "totalAvailable": "total_available",
     "totalUsed": "total_used",
     "expiresAt": "expires_at",
     "conversation": "Conversation",
     "save": "save",
-    "apiKeyRequiredTip1": "Please set your OpenAI API key in the bottom left of the sidebar",
-    "apiKeyRequiredTip2": "If you do not have an OpenAI API key, you can get one here:"
+    "apiKeyRequiredTip1": "Please set your API key in the bottom left of the sidebar",
+    "apiKeyRequiredTip2": "1. If you have a platform account, you can get it here:",
+    "apiKeyRequiredTip3": "2. If you do not have a platform account, you can purchase it here:"
 }

@@ -3,6 +3,7 @@ import Head from 'next/head';
 const HeadMeatSetup = () => {
     return (
         <Head>
+            <title>小鱼智能客服 - ai.yiios.com</title>
             <meta
                 name="viewport"
                 content="width=device-width, initial-scale=1.0"
@@ -13,10 +14,10 @@ const HeadMeatSetup = () => {
             />
             <meta
                 name="description"
-                content="Light-GPT is an interactive website project b"
+                content="一个体验超级好的客服对话网站，免费使用"
             />
 
-            <meta name="keywords" content="Next.js,ChatGPT,GPT,AI" />
+            <meta name="keywords" content="Next.js,客服,智能,AI" />
 
             {/** 支持webAPP(苹果添加到主页书签访问) */}
             <meta content="yes" name="apple-mobile-web-app-capable" />

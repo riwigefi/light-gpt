@@ -144,7 +144,7 @@ const HistoryTopicList: React.FC<{
                 }}
             >
                 <i className="fas fa-plus"></i>
-                <span>New Chat</span>
+                <span>新建对话</span>
             </div>
             <div
                 className={`${styles.historyTopicList}  ${

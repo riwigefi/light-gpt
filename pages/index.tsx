@@ -127,7 +127,7 @@ export default function Home() {
 
     const convertToPDF = () => {
         if (messageList.length === 0) {
-            toast.warn('No question and answer content available', {
+            toast.warn('没有对话内容', {
                 autoClose: 1000,
             });
             return;
@@ -160,7 +160,7 @@ export default function Home() {
 
     const convertToImage = () => {
         if (messageList.length === 0) {
-            toast.warn('No question and answer content available', {
+            toast.warn('没有对话内容', {
                 autoClose: 1000,
             });
             return;
@@ -276,12 +276,12 @@ export default function Home() {
             apiRequestRateLimit.current.requestsThisMinute >=
             apiRequestRateLimit.current.maxRequestsPerMinute
         ) {
-            toast.warn(`Api Requests are too frequent, try again later! `);
+            toast.warn(`请求过于频繁，请稍后再试！`);
             return;
         }
 
         if (!apiKey) {
-            toast.error('Please set API KEY', {
+            toast.error('请设置 API 密钥', {
                 autoClose: 3000,
             });
             setSystemMenuVisible(true);
@@ -291,7 +291,7 @@ export default function Home() {
 
         // 先把用户输入信息展示到对话列表
         if (!isRegenerate && !currentUserMessage) {
-            toast.warn('Please  Enter your question', { autoClose: 1000 });
+            toast.warn('请输入你要咨询的问题', { autoClose: 1000 });
             return;
         }
 
@@ -326,7 +326,7 @@ export default function Home() {
                     : {
                           role: ERole.system,
                           content:
-                              'You are a versatile expert, please answer each of my questions in a simple and easy-to-understand way as much as possible',
+                              'You are a versatile expert, please answer each of my questions in a simple and easy-to-understand way as much as possible, and it best to use Chinese.',
                           id: systemRole.id,
                           createdAt: systemRole.createdAt,
                       }
@@ -381,7 +381,7 @@ export default function Home() {
             } else {
                 const data = response.body;
                 if (!data) {
-                    throw new Error('No Data');
+                    throw new Error('没有数据');
                 }
                 const reader = data.getReader();
                 const decoder = new TextDecoder('utf-8');
@@ -416,7 +416,7 @@ export default function Home() {
         } catch (error: any) {
             setLoading(false);
             controller.current = null;
-            setServiceErrorMessage(error?.error?.message || 'Service Error');
+            setServiceErrorMessage(error?.error?.message || '服务器错误');
         }
     };
 
@@ -661,7 +661,7 @@ export default function Home() {
                     ) : (
                         <div className={styles.apiKeyRequiredTip}>
                             <div className={styles.title}>
-                                OpenAI API Key Required
+                                需要 API 密钥
                             </div>
                             <div className={styles.desc}>
                                 {t('apiKeyRequiredTip1')}
@@ -669,9 +669,16 @@ export default function Home() {
                             <div className={styles.desc}>
                                 {t('apiKeyRequiredTip2')}
                                 <Link href="https://openai.com" target="_blank">
-                                    Open Ai Platform
+                                    AI客服后台
                                 </Link>
                             </div>
+                            <div className={styles.desc}>
+                                {t('apiKeyRequiredTip3')}
+                                <Link href="https://shop.yiios.com" target="_blank">
+                                    购买链接
+                                </Link>
+                            </div>
+                            <img src="https://cardocr-1251789346.cos.ap-guangzhou.myqcloud.com/wx_qr.png" alt="popup" />
                         </div>
                     )}
                 </div>
@@ -700,7 +707,7 @@ export default function Home() {
                                             }
                                         }}
                                     >
-                                        Stop
+                                        停止
                                     </div>
                                 ) : (
                                     <div
@@ -711,7 +718,7 @@ export default function Home() {
                                             )
                                         }
                                     >
-                                        Regenerate
+                                        让客服重新回答
                                     </div>
                                 )}
                             </div>
@@ -737,8 +744,8 @@ export default function Home() {
                                 }}
                                 placeholder={
                                     loading
-                                        ? 'ai is thinking...'
-                                        : 'ask questions or type "img-prompt" to generate img'
+                                        ? '客服正在输入...'
+                                        : '向客服咨询问题...'
                                 }
                                 rows={1}
                                 onKeyDown={(event) => {
@@ -815,7 +822,7 @@ export default function Home() {
                             </div>
                         </div>
                         <div className={styles.siteDescription}>
-                            <span>Made by wjm</span>
+                            <span>yiios</span>
                             <span>｜</span>
                             <span>Just have fun</span>
                         </div>
@@ -834,7 +841,7 @@ export default function Home() {
                                     }
                                 }}
                             >
-                                Stop
+                                停止
                             </div>
                         ) : (
                             <div
@@ -843,7 +850,7 @@ export default function Home() {
                                     chatGPTTurboWithLatestUserPrompt(true)
                                 }
                             >
-                                Regenerate
+                                再次获取回答
                             </div>
                         )}
                     </div>
@@ -854,14 +861,12 @@ export default function Home() {
                         !messageList.length && styles.noMessage
                     }`}
                 >
-                    <i className="fas fa-image" onClick={convertToImage}></i>
-                    <i className="fas fa-file-pdf" onClick={convertToPDF}></i>
                     <i
                         className="fas fa-trash-alt"
                         onClick={() => {
                             if (messageList.length === 0) {
                                 toast.warn(
-                                    'No question and answer content available',
+                                    '没有对话内容',
                                     { autoClose: 1000 }
                                 );
                                 return;
@@ -869,6 +874,16 @@ export default function Home() {
                             setMessageList([]);
                         }}
                     ></i>
+                    <i className="fas fa-image" onClick={convertToImage}></i>
+                    <i className="fas fa-file-pdf" onClick={convertToPDF}></i>
+                    {loading ? (<i></i>) : (
+                    <i
+                        className="fas fa-paper-plane"
+                        onClick={() =>
+                            chatGPTTurboWithLatestUserPrompt(false)
+                        }
+                    ></i>
+                    )}
                 </div>
             </main>
 
@@ -903,9 +918,9 @@ export default function Home() {
                     {activeSystemMenu ===
                         SystemSettingMenu.systemRoleSettings && (
                         <div className={styles.systemRoleSettings}>
-                            <label htmlFor="systemRole">System Role</label>
+                            <label htmlFor="systemRole">客服设定</label>
                             <textarea
-                                placeholder="Enter system role here"
+                                placeholder="在此输入客服角色设定"
                                 id="systemRole"
                                 value={tempSystemRoleValue}
                                 rows={4}
@@ -924,7 +939,7 @@ export default function Home() {
                                     href="https://github.com/f/awesome-chatgpt-prompts"
                                     target="_blank"
                                 >
-                                    Awesome ChatGPT Prompts
+                                    客服角色文档
                                 </Link>{' '}
                             </div>
                             <div className={styles.btnContainer}>
@@ -955,9 +970,15 @@ export default function Home() {
                     )}
                     {activeSystemMenu === SystemSettingMenu.apiKeySettings && (
                         <div className={styles.systemRoleSettings}>
-                            <label htmlFor="apiKey">Open AI API Key</label>
+                            <label htmlFor="apiKey">API 密钥设置</label>
+                            <div className={styles.description}>
+                                <div className={styles.label}>{t('totalGranted')}: {apiKey ? currentApiKeyBilling.totalGranted.toFixed(3) : 0}</div>
+                                <div className={styles.label}>{t('totalAvailable')}: {apiKey ? currentApiKeyBilling.totalAvailable.toFixed(3) : 0}</div>
+                                <div className={styles.label}>{t('totalUsed')}: {apiKey ? currentApiKeyBilling.totalUsed.toFixed(3) : 0}</div>
+                                <div className={styles.label}>{t('expiresAt')}: {apiKey ? currentApiKeyBilling.expiresAt : '未知'}</div>
+                            </div>
                             <input
-                                placeholder="Enter your open ai api key"
+                                placeholder="输入你的 API 密钥"
                                 id="apiKey"
                                 value={tempApiKeyValue}
                                 onChange={(e) => {
@@ -971,12 +992,19 @@ export default function Home() {
 
                             <div className={styles.benefits}>
                                 {t('apiKeyHelp')}
-                                <Link
-                                    href="https://platform.openai.com/account/api-keys"
-                                    target="_blank"
-                                >
-                                    Open AI Platform API KEYS
-                                </Link>{' '}
+                                <div className={styles.desc}>
+                                {t('apiKeyRequiredTip2')}
+                                <Link href="https://openai.com" target="_blank">
+                                    AI客服后台
+                                </Link>
+                            </div>
+                            <div className={styles.desc}>
+                                {t('apiKeyRequiredTip3')}
+                                <Link href="https://shop.yiios.com" target="_blank">
+                                    购买链接
+                                </Link>
+                            </div>
+
                             </div>
                             <div className={styles.btnContainer}>
                                 <button

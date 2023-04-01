@@ -10,6 +10,8 @@ import { ThemeLocalKey, formatTimestamp } from '../../../utils';
 
 import styles from './index.module.scss';
 
+import Link from 'next/link';
+
 const IndexHeader: React.FC<{
     apiKey: string;
     theme: Theme;
@@ -52,42 +54,23 @@ const IndexHeader: React.FC<{
     return (
         <div className={styles.headerContainer}>
             <div className={styles.currentApiKeyBilling}>
-                <div className={styles.item}>
-                    <div className={styles.label}>{t('totalGranted')}:</div>
-                    {apiKey ? currentApiKeyBilling.totalGranted.toFixed(3) : 0}$
-                </div>
-                <div className={styles.item}>
-                    <div className={styles.label}>{t('totalAvailable')}:</div>
-                    {apiKey
-                        ? currentApiKeyBilling.totalAvailable.toFixed(3)
-                        : 0}
-                    $
-                </div>
-                <div className={styles.item}>
-                    <div className={styles.label}>{t('totalUsed')}:</div>
-                    {apiKey ? currentApiKeyBilling.totalUsed.toFixed(3) : 0}$
-                </div>
-                <div className={styles.item}>
-                    <div className={styles.label}>{t('expiresAt')}:</div>
-                    {apiKey ? currentApiKeyBilling.expiresAt : '未知'}
-                </div>
             </div>
 
             <div className={styles.siteIntroduction}>
                 <div className={styles.title}>
-                    <span className={styles.item}>Light</span>
-                    <span className={styles.item}>GPT</span>
+                    <span className={styles.item}>ai.yiios.com</span>
+                    <span className={styles.item}>小鱼智能客服</span>
                 </div>
                 <div className={styles.description}>
-                    Based on OpenAI API(gpt-3.5-turbo)
-                </div>
+                        智能连接用户，全场景赋能客服
+                    </div>
             </div>
             <div className={styles.sideMenus}>
                 <i
-                    className="fab fa-github"
+                    className="fas fa-comment-dots"
                     onClick={() => {
                         window.open(
-                            'https://github.com/riwigefi/light-gpt',
+                            'https://yiios.com/post/about/',
                             '_blank'
                         );
                     }}
