@@ -1,5 +1,5 @@
 import { parseOpenAIStream } from './utils';
-import { ERole, IMessage } from './interface';
+import { IMessage } from './interface';
 
 export const generateImageWithText = async (
     apiKey: string,

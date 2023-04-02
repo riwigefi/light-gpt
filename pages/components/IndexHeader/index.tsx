@@ -52,7 +52,8 @@ const IndexHeader: React.FC<{
     return (
         <div className={styles.headerContainer}>
             <div className={styles.currentApiKeyBilling}>
-                <div className={styles.item}>
+                {/** 官方api变动，不再能获取账单 */}
+                {/* <div className={styles.item}>
                     <div className={styles.label}>{t('totalGranted')}:</div>
                     {apiKey ? currentApiKeyBilling.totalGranted.toFixed(3) : 0}$
                 </div>
@@ -70,7 +71,7 @@ const IndexHeader: React.FC<{
                 <div className={styles.item}>
                     <div className={styles.label}>{t('expiresAt')}:</div>
                     {apiKey ? currentApiKeyBilling.expiresAt : '未知'}
-                </div>
+                </div> */}
             </div>
 
             <div className={styles.siteIntroduction}>

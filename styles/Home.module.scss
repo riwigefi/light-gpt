@@ -38,23 +38,29 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            padding-left: 2vw;
+            padding-left: 1vw;
             flex-shrink: 0;
             height: 180px;
             .menu {
                 height: 30px;
                 display: flex;
                 align-items: center;
-                font-size: 14px;
+                font-size: 12px;
                 cursor: pointer;
-                i {
+                input {
                     width: 20px;
+                }
+                i {
+                    width: 10px;
                     text-align: right;
                 }
                 div {
                     width: 120px;
                     margin-left: 10px;
                     color: var(--aside-text-color);
+                }
+                span {
+                    white-space: nowrap;
                 }
             }
         }

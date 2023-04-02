@@ -37,7 +37,8 @@
         "react-loading": "^2.0.3",
         "react-toastify": "^9.1.1",
         "typescript": "4.9.5",
-        "uuid": "^9.0.0"
+        "uuid": "^9.0.0",
+        "zlib": "^1.0.5"
     },
     "devDependencies": {
         "@types/highlight.js": "^10.1.0",

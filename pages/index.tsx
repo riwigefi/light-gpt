@@ -15,6 +15,8 @@ import html2canvas from 'html2canvas';
 
 import html2pdf from 'html2pdf-jspdf2';
 
+import CryptoJS from 'crypto-js';
+
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import styles from '@/styles/Home.module.scss';
@@ -103,25 +105,6 @@ export default function Home() {
 
     const [tempApiKeyValue, setTempApiKeyValue] = useState('');
     const [apiKey, setApiKey] = useState('');
-
-    const [currentApiKeyBilling, setCurrentApiKeyBilling] = useState({
-        totalGranted: 0,
-        totalAvailable: 0,
-        totalUsed: 0,
-    });
-
-    useEffect(() => {
-        if (!apiKey) return;
-        getCurrentApiKeyBilling(apiKey).then((res) => {
-            if (res.total_granted) {
-                setCurrentApiKeyBilling({
-                    totalGranted: res.total_granted,
-                    totalAvailable: res.total_available,
-                    totalUsed: res.total_used,
-                });
-            }
-        });
-    }, [apiKey]);
 
     const chatHistoryEle = useRef<HTMLDivElement | null>(null);
 
@@ -313,10 +296,10 @@ export default function Home() {
             }
         }
 
-        // 取出最近的3条messages，作为上下文
+        // 取出最近的5条messages，作为上下文
         const len = newMessageList.length;
         const latestMessageLimit3 = newMessageList.filter(
-            (_, idx) => idx >= len - 4
+            (_, idx) => idx >= len - (contextMessageCount + 1)
         );
         if (!latestMessageLimit3.some((item) => item.role === ERole.system)) {
             // system role setting
@@ -535,6 +518,8 @@ export default function Home() {
         setIsZh(newIsZh);
     };
 
+    const [contextMessageCount, setContextMessageCount] = useState(5);
+
     return (
         <div id="app" className={styles.app} data-theme={theme}>
             <aside
@@ -607,6 +592,21 @@ export default function Home() {
                             <div>{menu.label}</div>
                         </div>
                     ))}
+                    <div className={styles.menu}>
+                        <span>最近</span>
+                        <input
+                            value={contextMessageCount}
+                            onChange={(e) => {
+                                const text = e.target.value;
+                                const count = Number.isNaN(Number(text))
+                                    ? 3
+                                    : Number(text);
+                                setContextMessageCount(count);
+                            }}
+                            type="text"
+                        />
+                        <span>条消息作为上下文</span>
+                    </div>
                 </div>
             </aside>
 
