@@ -265,7 +265,7 @@ export default function Home() {
 
         if (!apiKey) {
             toast.error('Please set API KEY', {
-                autoClose: 3000,
+                autoClose: 1000,
             });
             setSystemMenuVisible(true);
             setActiveSystemMenu(SystemSettingMenu.apiKeySettings);

@@ -230,7 +230,7 @@ const HistoryTopicList: React.FC<{
                                                         toast.success(
                                                             'Update Topic Name Successful',
                                                             {
-                                                                autoClose: 500,
+                                                                autoClose: 1000,
                                                             }
                                                         );
                                                     }
@@ -253,7 +253,7 @@ const HistoryTopicList: React.FC<{
                                                         toast.success(
                                                             'Successful deleted topic',
                                                             {
-                                                                autoClose: 500,
+                                                                autoClose: 1000,
                                                             }
                                                         );
                                                     }
