@@ -43,7 +43,6 @@
         "zlib": "^1.0.5"
     },
     "devDependencies": {
-        "@types/dotenv": "^8.2.0",
         "@types/highlight.js": "^10.1.0",
         "@types/html2canvas": "^1.0.0",
         "@types/katex": "^0.16.0",
