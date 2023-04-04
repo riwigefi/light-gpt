@@ -25,7 +25,7 @@ Demo: https://light-gpt.vercel.app
 
 ## Local Deployment
 
-To deploy Light-GPT locally, follow these steps (requires node16 or higher):
+To deploy Light-GPT locally, follow these steps (requires node16.14.2 or higher):
 
 1. Download the project to your local machine:
 
@@ -62,16 +62,16 @@ To deploy Light-GPT on Vercel's cloud platform:
 
 For those who prefer to use Docker for local deployment:
 
-1. Pull the Docker image:
+1. Pull the latest Docker image:
 
 ```bash
-docker pull whynotisme/light-gpt
+docker pull whynotisme/light-gpt:latest
 ```
 
-2. Run the image and map port 8080 to port 80:
+2. Run the image and map port 3000 to port 3000:
 
 ```bash
-docker run -p 8080:80 whynotisme/light-gpt
+docker run -p 3000:3000 whynotisme/light-gpt
 ```
 
 # Light-GPT
@@ -100,7 +100,7 @@ Github 代码库: https://github.com/riwigefi/light-gpt
 
 ## 本地部署
 
-要在本地部署 Light-GPT，按照以下步骤操作(需要 node16 及以上版本)：
+要在本地部署 Light-GPT，按照以下步骤操作(需要 node16.14.2 及以上版本)：
 
 1. 将项目下载到本地:
 
@@ -133,18 +133,18 @@ pnpm run dev
 
 为方便使用，本项目也提供了 Docker 镜像。
 
-1. 拉取 Docker 镜像:
+1. 拉取最新的 Docker 镜像:
 
 ```bash
 docker pull whynotisme/light-gpt
 ```
 
-2. 运行镜像并将端口 8080 映射到端口 80:
+2. 运行镜像 ，将 Docker 容器内的端口 3000 映射到主机的端口 3000 上:
 
 ```bash
-docker run -p 8080:80 whynotisme/light-gpt
+docker run -p 3000:3000 whynotisme/light-gpt
 ```
 
 ## 重要提示
 
-**本地部署时，由于 OpenAi 风控政策，请务必保证你是科学上网环境，你可以正常访问 open ai 官网，如果不能，请不要设置 api key 进行调试，否则会有异常风险**
+本地部署时，只需要支持浏览器可科学上网即可，因为请求是在浏览器发起的。**由于 OpenAi 风控政策，请务必保证你是科学上网环境，你可以正常访问 open ai 官网，如果不能，请不要设置 api key 进行调试，否则会有异常风险**

@@ -1,5 +1,5 @@
-# 使用Node.js官方提供的Node.js 16.13.1版本作为基础镜像
-FROM node:16.13.1
+# 使用Node.js官方提供的Node.js 16.14.2版本作为基础镜像
+FROM node:16.14.2
 
 # 设置工作目录为/app
 WORKDIR /app

@@ -14,7 +14,6 @@ const IndexHeader: React.FC<{
     apiKey: string;
     theme: Theme;
     updateTheme: (theme: Theme) => void;
-    toggleSystemMenuVisible: () => void;
 }> = ({ apiKey }) => {
     // const { t } = useTranslation();
 

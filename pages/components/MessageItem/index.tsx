@@ -49,7 +49,6 @@ const MessageItem: React.FC<{
     role: ERole;
     message: string;
     avatar?: string;
-
     removeMessageById?: (id: string) => void;
 }> = ({ id, role, message, avatar, removeMessageById }) => {
     const isImgResponse = message?.startsWith(
@@ -72,7 +71,7 @@ const MessageItem: React.FC<{
             const rawCode = fence(...args);
             return `<div class='highlight-js-pre-container'>
         <div id class="copy" data-code=${encodeURIComponent(token.content)}>
-        <i class="fa fa-clipboard" aria-hidden="true"></i> 
+        <i class="fa fa-clipboard" aria-hidden="true"></i>
         </div>
         ${rawCode}
         </div>`;
@@ -168,7 +167,8 @@ const MessageItem: React.FC<{
                                 width={1024}
                                 height={1024}
                                 src={message}
-                                alt=""
+                                alt="generateImgWithText"
+                                loading="lazy"
                             />
                         </div>
                     ) : (

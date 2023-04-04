@@ -15,8 +15,6 @@ import html2canvas from 'html2canvas';
 
 import html2pdf from 'html2pdf-jspdf2';
 
-import CryptoJS from 'crypto-js';
-
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import styles from '@/styles/Home.module.scss';
@@ -49,6 +47,8 @@ import {
     SystemRoleLocalKey,
     APIKeyLocalKey,
     GenerateImagePromptPrefix,
+    encryptApiKey,
+    decryptApiKey,
 } from '../utils';
 
 const chatDB = new ChatService();
@@ -93,11 +93,6 @@ export default function Home() {
     }, []);
 
     const [tempSystemRoleValue, setTempSystemRoleValue] = useState('');
-
-    const [systemMenuVisible, setSystemMenuVisible] = useState(false);
-    const toggleSystemMenuVisible = useCallback(() => {
-        setSystemMenuVisible((visible) => !visible);
-    }, []);
 
     const [activeSystemMenu, setActiveSystemMenu] = useState<
         SystemSettingMenu | ''
@@ -267,7 +262,6 @@ export default function Home() {
             toast.error('Please set API KEY', {
                 autoClose: 1000,
             });
-            setSystemMenuVisible(true);
             setActiveSystemMenu(SystemSettingMenu.apiKeySettings);
             return;
         }
@@ -433,7 +427,7 @@ export default function Home() {
     const updateRobotAvatar = (img: string) => {
         setRobotAvatar(img);
         setActiveSystemMenu('');
-        setSystemMenuVisible(false);
+
         window.localStorage.setItem(RobotAvatarLocalKey, img);
     };
 
@@ -442,7 +436,7 @@ export default function Home() {
     const updateUserAvatar = (img: string) => {
         setUserAvatar(img);
         setActiveSystemMenu('');
-        setSystemMenuVisible(false);
+
         window.localStorage.setItem(UserAvatarLocalKey, img);
     };
 
@@ -468,9 +462,11 @@ export default function Home() {
         }
         const light_gpt_api_key =
             window.localStorage.getItem(APIKeyLocalKey) || '';
-        if (light_gpt_api_key !== '') {
+        const decryptedApiKey = decryptApiKey(light_gpt_api_key);
+        if (decryptedApiKey !== '') {
             // 不显示设置过的api_key
-            setApiKey(light_gpt_api_key);
+            setApiKey(decryptedApiKey);
+            setTempApiKeyValue(decryptedApiKey);
         }
     }, []);
 
@@ -558,7 +554,10 @@ export default function Home() {
                     <div
                         className={styles.menu}
                         onClick={() => {
+                            console.log('主题切换---');
                             setTheme(theme === 'light' ? 'dark' : 'light');
+                            const secretKey = process.env.SECRET_KEY;
+                            console.log('secret-key--', secretKey);
                             window.localStorage.setItem(
                                 ThemeLocalKey,
                                 theme === 'light' ? 'dark' : 'light'
@@ -620,7 +619,6 @@ export default function Home() {
                         apiKey={apiKey}
                         theme={theme}
                         updateTheme={updateTheme}
-                        toggleSystemMenuVisible={toggleSystemMenuVisible}
                     />
                 </div>
                 <div className={styles.main}>
@@ -932,7 +930,7 @@ export default function Home() {
                                     className={styles.saveButton}
                                     onClick={() => {
                                         setActiveSystemMenu('');
-                                        setSystemMenuVisible(false);
+
                                         setSystemRole({
                                             role: ERole.system,
                                             content: tempSystemRoleValue,
@@ -983,11 +981,13 @@ export default function Home() {
                                     className={styles.saveButton}
                                     onClick={() => {
                                         setActiveSystemMenu('');
-                                        setSystemMenuVisible(false);
                                         setApiKey(tempApiKeyValue);
+
+                                        const encryptedApiKey =
+                                            encryptApiKey(tempApiKeyValue);
                                         window.localStorage.setItem(
                                             APIKeyLocalKey,
-                                            tempApiKeyValue
+                                            encryptedApiKey
                                         );
                                         toast.success('Successful update', {
                                             autoClose: 1000,
