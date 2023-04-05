@@ -28,7 +28,22 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
+            margin-bottom: 8px;
         }
+        .typingAnimation::after {
+            animation: typing 3s infinite;
+            height: 20px;
+            content: "";
+            color: var(--text-color-normal);
+          }
+          .replyingAnimation::after {
+            animation: reply 3s infinite;
+            height: 20px;
+            content: "";
+            color: var(--text-color-normal);
+          }
+          
+          
     }
     .user {
         margin-left: 20px;
@@ -112,3 +127,34 @@
         }
     }
 }
+
+
+@keyframes typing {
+    0% {
+      content: "typing.";
+    }
+    33% {
+      content: "typing..";
+    }
+    66% {
+      content: "typing...";
+    }
+    100% {
+      content: "typing.";
+    }
+  }
+
+@keyframes reply {
+    0% {
+      content: "reply.";
+    }
+    33% {
+      content: "reply..";
+    }
+    66% {
+      content: "reply...";
+    }
+    100% {
+      content: "reply.";
+    }
+  }

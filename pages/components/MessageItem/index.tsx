@@ -48,9 +48,10 @@ const MessageItem: React.FC<{
     id: string;
     role: ERole;
     message: string;
-    avatar?: string;
+    avatar: string;
     removeMessageById?: (id: string) => void;
-}> = ({ id, role, message, avatar, removeMessageById }) => {
+    isTemp?: boolean;
+}> = ({ id, role, message, avatar, removeMessageById, isTemp }) => {
     const isImgResponse = message?.startsWith(
         'https://oaidalleapiprodscus.blob.core.windows.net/private'
     );
@@ -136,29 +137,27 @@ const MessageItem: React.FC<{
                     ></div>
 
                     <div className={`${styles.user} ${styles.avatar}`}>
-                        {avatar && (
-                            <Image
-                                className={styles.img}
-                                width={40}
-                                height={40}
-                                src={avatar}
-                                alt="user"
-                            />
-                        )}
+                        <Image
+                            className={styles.img}
+                            width={40}
+                            height={40}
+                            src={avatar}
+                            alt="user"
+                        />
+                       {isTemp &&  <div className={styles.typingAnimation}></div>}
                     </div>
                 </>
             ) : (
                 <>
                     <div className={`${styles.assistant} ${styles.avatar}`}>
-                        {avatar && (
-                            <Image
-                                className={styles.img}
-                                width={40}
-                                height={40}
-                                src={avatar}
-                                alt="robot"
-                            />
-                        )}
+                        <Image
+                            className={styles.img}
+                            width={40}
+                            height={40}
+                            src={avatar}
+                            alt="robot"
+                        />
+                        { isTemp && <div className={styles.replyingAnimation}></div> }
                     </div>
                     {isImgResponse ? (
                         <div className={styles.imgContent}>

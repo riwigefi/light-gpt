@@ -16,6 +16,7 @@
         transition: all 0.2s ease;
         &.show {
             width: 14vw;
+            min-width: 206px;
         }
         .historyTopicListContainer {
             flex: 1;
@@ -225,6 +226,7 @@
                         box-sizing: border-box;
                         background-color: var(--bg-color);
                         color: var(--text-color-normal);
+                        resize: vertical;
                     }
 
                     .submit {
@@ -536,6 +538,7 @@
                             margin: 0;
                             font-size: 12px;
                             min-height: 30px;
+                            resize: vertical;
                         }
                         .submit {
                             right: 4px;

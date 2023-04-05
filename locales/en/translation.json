@@ -17,5 +17,6 @@
     "conversation": "Conversation",
     "save": "save",
     "apiKeyRequiredTip1": "Please set your OpenAI API key in the bottom left of the sidebar",
-    "apiKeyRequiredTip2": "If you do not have an OpenAI API key, you can get one here:"
+    "apiKeyRequiredTip2": "If you do not have an OpenAI API key, you can get one here:",
+    "chatBackgroundContext": "Count of context msg logs:"
 }
