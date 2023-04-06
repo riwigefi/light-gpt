@@ -78,9 +78,7 @@ const IndexHeader: React.FC<{
                     <span className={styles.item}>Light</span>
                     <span className={styles.item}>GPT</span>
                 </div>
-                <div className={styles.description}>
-                    Based on OpenAI API(gpt-3.5-turbo)
-                </div>
+                <div className={styles.description}>Based on gpt-3.5-turbo</div>
             </div>
             <div className={styles.sideMenus}>
                 <i

@@ -5,6 +5,7 @@
     overflow: hidden;
     .aside {
         width: 0;
+        min-width: 0;
         height: 100%;
         overflow: hidden;
         background-color: var(--aside-bg);
