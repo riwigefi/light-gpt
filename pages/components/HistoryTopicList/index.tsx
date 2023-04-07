@@ -47,10 +47,11 @@ const HistoryTopicList: React.FC<{
             id: topicId,
             name: topicName,
             createdAt: Date.now(),
-            systemRole: currentSystemRole,
+            systemRole: DefaultSystemRole,
         };
 
         chatDB.addTopic(topic);
+        updateCurrentSystemRole(DefaultSystemRole);
         let newHistoryTopicList = historyTopicList.concat([]);
         newHistoryTopicList.unshift(topic);
         setHistoryTopicList(newHistoryTopicList);
