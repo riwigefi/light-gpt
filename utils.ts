@@ -106,3 +106,5 @@ export const SystemRoleLocalKey = 'light_gpt_system_role';
 export const APIKeyLocalKey = 'light_gpt_api_key';
 
 export const GenerateImagePromptPrefix = 'img-';
+
+export const DefaultSystemRole = `You are a versatile expert, please answer each of my questions in a simple and easy-to-understand way as much as possible`;

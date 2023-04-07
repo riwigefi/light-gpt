@@ -44,11 +44,11 @@ import {
     ThemeLocalKey,
     UserAvatarLocalKey,
     RobotAvatarLocalKey,
-    SystemRoleLocalKey,
     APIKeyLocalKey,
     GenerateImagePromptPrefix,
     encryptApiKey,
     decryptApiKey,
+    DefaultSystemRole,
 } from '../utils';
 
 const chatDB = new ChatService();
@@ -195,10 +195,18 @@ export default function Home() {
 
     const [systemRole, setSystemRole] = useState<IMessage>({
         role: ERole.system,
-        content: '',
+        content: DefaultSystemRole,
         id: uuid(),
         createdAt: Date.now(),
     });
+
+    const updateCurrentSystemRole = useCallback((newSystemRole: string) => {
+        setSystemRole((info) => ({
+            ...info,
+            content: newSystemRole,
+        }));
+        setTempSystemRoleValue(newSystemRole);
+    }, []);
 
     const [messageList, setMessageList] = useState<IMessage[]>([]);
 
@@ -300,17 +308,12 @@ export default function Home() {
         );
         if (!latestMessageLimit3.some((item) => item.role === ERole.system)) {
             // system role setting
-            latestMessageLimit3.unshift(
-                systemRole.content
-                    ? systemRole
-                    : {
-                          role: ERole.system,
-                          content:
-                              'You are a versatile expert, please answer each of my questions in a simple and easy-to-understand way as much as possible',
-                          id: systemRole.id,
-                          createdAt: systemRole.createdAt,
-                      }
-            );
+            latestMessageLimit3.unshift({
+                role: ERole.system,
+                content: systemRole.content,
+                id: systemRole.id,
+                createdAt: systemRole.createdAt,
+            });
         }
 
         setMessageList(newMessageList);
@@ -443,6 +446,11 @@ export default function Home() {
         window.localStorage.setItem(UserAvatarLocalKey, img);
     };
 
+    const [activeTopicId, setActiveTopicId] = useState('');
+    const changeActiveTopicId = useCallback((id: string) => {
+        setActiveTopicId(id);
+    }, []);
+
     useEffect(() => {
         const light_gpt_theme =
             window.localStorage.getItem(ThemeLocalKey) || 'light';
@@ -453,16 +461,7 @@ export default function Home() {
         const light_gpt_robot_avatar =
             window.localStorage.getItem(RobotAvatarLocalKey) || '/robot.png';
         setRobotAvatar(light_gpt_robot_avatar);
-        const light_gpt_system_role =
-            window.localStorage.getItem(SystemRoleLocalKey) || '';
-        if (light_gpt_system_role !== '') {
-            setSystemRole({
-                role: ERole.system,
-                content: light_gpt_system_role,
-                id: uuid(),
-                createdAt: Date.now(),
-            });
-        }
+
         const light_gpt_api_key =
             window.localStorage.getItem(APIKeyLocalKey) || '';
         const decryptedApiKey = decryptApiKey(light_gpt_api_key);
@@ -471,11 +470,6 @@ export default function Home() {
             setApiKey(decryptedApiKey);
             setTempApiKeyValue(decryptedApiKey);
         }
-    }, []);
-
-    const [activeTopicId, setActiveTopicId] = useState('');
-    const changeActiveTopicId = useCallback((id: string) => {
-        setActiveTopicId(id);
     }, []);
 
     const [asideVisible, setAsideVisible] = useState(true);
@@ -547,6 +541,8 @@ export default function Home() {
                         changeActiveTopicId={changeActiveTopicId}
                         showMask={showMask}
                         hideMask={hideMask}
+                        currentSystemRole={systemRole.content}
+                        updateCurrentSystemRole={updateCurrentSystemRole}
                     />
                 </div>
 
@@ -607,7 +603,6 @@ export default function Home() {
                             }}
                             type="text"
                         />
-                        
                     </div>
                 </div>
             </aside>
@@ -647,14 +642,15 @@ export default function Home() {
                                         removeMessageById={removeMessageById}
                                     />
                                 ))}
-                            { !loading && currentUserMessage.length > 0 && (
-                                <MessageItem id={tempCurrentUserMessageId.current}
+                            {!loading && currentUserMessage.length > 0 && (
+                                <MessageItem
+                                    id={tempCurrentUserMessageId.current}
                                     role={ERole.user}
                                     avatar={userAvatar}
                                     message={currentUserMessage}
                                     isTemp
                                 />
-                            ) }
+                            )}
                             {loading && currentAssistantMessage.length > 0 && (
                                 <MessageItem
                                     id={tempCurrentAssistantMessageId.current}
@@ -738,7 +734,9 @@ export default function Home() {
                                             2 +
                                             'px';
                                     }
-                                    setCurrentUserMessage(userPromptRef.current!.value)
+                                    setCurrentUserMessage(
+                                        userPromptRef.current!.value
+                                    );
                                     scrollSmoothThrottle();
                                 }}
                                 ref={(e) => {
@@ -767,7 +765,7 @@ export default function Home() {
                                                 false
                                             );
                                             event.preventDefault();
-                                        } 
+                                        }
                                     }
                                     // mobile desktop
                                     if (
@@ -851,7 +849,10 @@ export default function Home() {
                     }`}
                 >
                     <i className="fas fa-image" onClick={convertToImage}></i>
-                    <i className="fas fa-file-download" onClick={convertToPDF}></i>
+                    <i
+                        className="fas fa-file-download"
+                        onClick={convertToPDF}
+                    ></i>
                     <i
                         className="fas fa-redo-alt"
                         onClick={() => {
@@ -926,7 +927,7 @@ export default function Home() {
                             <div className={styles.btnContainer}>
                                 <button
                                     className={styles.saveButton}
-                                    onClick={() => {
+                                    onClick={async () => {
                                         setActiveSystemMenu('');
 
                                         setSystemRole({
@@ -935,10 +936,13 @@ export default function Home() {
                                             id: uuid(),
                                             createdAt: systemRole.createdAt,
                                         });
-                                        window.localStorage.setItem(
-                                            ThemeLocalKey,
-                                            tempSystemRoleValue
-                                        );
+                                        if (activeTopicId) {
+                                            // 更新当前主题的系统设置
+                                            await chatDB.updateTopicSystemRoleById(
+                                                activeTopicId,
+                                                tempSystemRoleValue
+                                            );
+                                        }
                                         toast.success('Successful update', {
                                             autoClose: 1000,
                                         });
