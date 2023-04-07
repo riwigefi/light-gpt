@@ -745,7 +745,7 @@ export default function Home() {
                                 placeholder={
                                     loading
                                         ? 'ai is thinking...'
-                                        : 'ask questions or type "img-prompt" to generate img'
+                                        : `ask questions or type "img-prompt" to generate img, "Ctrl+Enter" to submit`
                                 }
                                 rows={1}
                                 onKeyDown={(event) => {
