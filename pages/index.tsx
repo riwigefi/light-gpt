@@ -28,12 +28,7 @@ import AvatarUploader from './components/AvatarUploader';
 
 import HistoryTopicList from './components/HistoryTopicList';
 
-import {
-    chatWithGptTurbo,
-    chatWithGptTurboByProxy,
-    generateImageWithText,
-    getCurrentApiKeyBilling,
-} from '../open.ai.service';
+import { chatWithGptTurbo, generateImageWithText } from '../open.ai.service';
 
 import { Theme, SystemSettingMenu, ERole, IMessage } from '../interface';
 
@@ -61,19 +56,24 @@ export default function Home() {
         isUsingComposition: false,
     });
 
+    const [isMobile, setIsMobile] = useState(false);
+
     useEffect(() => {
-        const isMobile =
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                window.navigator.userAgent
-            );
-        windowState.current.isMobile = isMobile;
-        windowState.current.windowHeight = window.innerHeight;
         const handleWindowResize = () => {
+            console.log('resize event--');
+            const isMobile =
+                /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                    window.navigator.userAgent
+                ) || window.innerWidth <= 768;
+            setIsMobile(isMobile);
+            windowState.current.isMobile = isMobile;
+            windowState.current.windowHeight = window.innerHeight;
             windowState.current.virtualKeyboardVisible =
                 window.innerHeight < windowState.current.windowHeight;
         };
-        window.addEventListener('resize', handleWindowResize);
 
+        handleWindowResize();
+        window.addEventListener('resize', handleWindowResize);
         return () => {
             window.removeEventListener('resize', handleWindowResize);
         };
@@ -306,8 +306,12 @@ export default function Home() {
         const latestMessageLimit3 = newMessageList.filter(
             (_, idx) => idx >= len - (contextMessageCount + 1)
         );
-        if (!latestMessageLimit3.some((item) => item.role === ERole.system)) {
-            // system role setting
+        if (
+            !latestMessageLimit3.some(
+                (item) => item.role === ERole.system && !!item.content
+            )
+        ) {
+            // default system role setting
             latestMessageLimit3.unshift({
                 role: ERole.system,
                 content: systemRole.content,
@@ -519,18 +523,6 @@ export default function Home() {
                 id="appAside"
                 className={`${styles.aside} ${asideVisible && styles.show}`}
             >
-                <div
-                    className={`${styles.asideToggle} ${
-                        asideVisible && styles.asideShow
-                    }`}
-                    onClick={toggleAsideVisible}
-                >
-                    {asideVisible ? (
-                        <i className="fas fa-chevron-left"></i>
-                    ) : (
-                        <i className="fas fa-chevron-right"></i>
-                    )}
-                </div>
                 {/** 历史对话 */}
                 <div className={styles.historyTopicListContainer}>
                     <HistoryTopicList
@@ -553,10 +545,7 @@ export default function Home() {
                     <div
                         className={styles.menu}
                         onClick={() => {
-                            console.log('主题切换---');
                             setTheme(theme === 'light' ? 'dark' : 'light');
-                            const secretKey = process.env.SECRET_KEY;
-                            console.log('secret-key--', secretKey);
                             window.localStorage.setItem(
                                 ThemeLocalKey,
                                 theme === 'light' ? 'dark' : 'light'
@@ -608,6 +597,20 @@ export default function Home() {
             </aside>
 
             <main className={styles.conversationContent}>
+                {/** toggle aside button */}
+                <div
+                    className={`${styles.asideToggle} ${
+                        asideVisible && styles.asideShow
+                    }`}
+                    onClick={toggleAsideVisible}
+                >
+                    {asideVisible ? (
+                        <i className="fas fa-chevron-left"></i>
+                    ) : (
+                        <i className="fas fa-chevron-right"></i>
+                    )}
+                </div>
+
                 <HeadMeatSetup></HeadMeatSetup>
 
                 <ToastContainer></ToastContainer>
@@ -745,7 +748,11 @@ export default function Home() {
                                 placeholder={
                                     loading
                                         ? 'ai is thinking...'
-                                        : `ask questions or type "img-prompt" to generate img, "Ctrl+Enter" to submit`
+                                        : `ask questions or type "img-prompt" to generate img ${
+                                              !isMobile
+                                                  ? ', "Ctrl+Enter" to submit'
+                                                  : ''
+                                          }`
                                 }
                                 rows={1}
                                 onKeyDown={(event) => {

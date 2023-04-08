@@ -66,10 +66,18 @@
                 }
             }
         }
+    }
+    .conversationContent {
+        flex: 1;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
         .asideToggle {
             width: 40px;
             height: 40px;
-            position: fixed;
+            position: absolute;
             top: 50%;
             margin-top: -20px;
             left: -20px;
@@ -79,19 +87,12 @@
             cursor: pointer;
             transition: all 0.2s ease;
             &.asideShow {
-                left: 14vw;
+                left: 0;
             }
             i {
                 transform: scale(2);
             }
         }
-    }
-    .conversationContent {
-        flex: 1;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
         .header {
             width: 100%;
             height: 80px;
@@ -459,20 +460,22 @@
             height: 100vh;
             width: 0;
             &.show {
-                width: 50vw;
-            }
-            .asideToggle {
-                &.asideShow {
-                    left: 50vw;
-                    i {
-                        color: var(--light-bg-color);
-                    }
-                }
+                width: 60vw;
             }
         }
 
         .conversationContent {
             height: 100%;
+            .asideToggle {
+                position: fixed;
+                z-index: 2;
+                &.asideShow {
+                    left: 50vw;
+                    i {
+                        color: var(--aside-text-color);
+                    }
+                }
+            }
             .main {
                 .apiKeyRequiredTip {
                     .title {

@@ -43,17 +43,17 @@ const HistoryTopicList: React.FC<{
 
         const topicName = `Chat ${topicId.slice(0, 6)}`;
 
-        const topic = {
+        const newTopic = {
             id: topicId,
             name: topicName,
             createdAt: Date.now(),
             systemRole: DefaultSystemRole,
         };
 
-        chatDB.addTopic(topic);
+        chatDB.addTopic(newTopic);
         updateCurrentSystemRole(DefaultSystemRole);
         let newHistoryTopicList = historyTopicList.concat([]);
-        newHistoryTopicList.unshift(topic);
+        newHistoryTopicList.unshift(newTopic);
         setHistoryTopicList(newHistoryTopicList);
         changeActiveTopicId(topicId);
         updateCurrentMessageList([]);
@@ -99,16 +99,15 @@ const HistoryTopicList: React.FC<{
 
                 const topicName = `Chat ${topicId.slice(0, 6)}`;
 
-                const topic = {
+                const newTopic = {
                     id: topicId,
                     name: topicName,
                     createdAt: Date.now(),
                     systemRole: DefaultSystemRole,
                 };
 
-                chatDB.addTopic(topic);
-                let newHistoryTopicList = [];
-                newHistoryTopicList.unshift(topic);
+                chatDB.addTopic(newTopic);
+                const newHistoryTopicList = [newTopic];
                 changeActiveTopicId(topicId);
                 updateCurrentMessageList([]);
                 setHistoryTopicList(newHistoryTopicList);
@@ -120,12 +119,11 @@ const HistoryTopicList: React.FC<{
             updateCurrentSystemRole(topics[0].systemRole);
 
             showMask();
-            // 找出点击的主题的历史对话
+            // message-list for topic
             const currentMessageList = await chatDB.getConversationsByTopicId(
                 topics[0].id
             );
             updateCurrentMessageList(currentMessageList as IMessage[]);
-
             hideMask();
         };
         init();
