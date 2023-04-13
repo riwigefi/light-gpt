@@ -750,7 +750,7 @@ export default function Home() {
                                         ? 'ai is thinking...'
                                         : `ask questions or type "img-prompt" to generate img ${
                                               !isMobile
-                                                  ? ', "Ctrl+Enter" to submit'
+                                                  ? ',pressing Enter to submit quickly'
                                                   : ''
                                           }`
                                 }
@@ -761,7 +761,8 @@ export default function Home() {
                                         if (
                                             event.code === 'Enter' &&
                                             !event.shiftKey &&
-                                            (event.metaKey || event.ctrlKey)
+                                            !event.metaKey &&
+                                            !event.ctrlKey
                                         ) {
                                             if (
                                                 windowState.current
